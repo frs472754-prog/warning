@@ -18,14 +18,17 @@
 
   /* --- КУРСОР --- */
   .cursor-glow {
-    position: fixed; width: 20px; height: 20px;
+    position: fixed; top: 0; left: 0;
+    width: 20px; height: 20px;
     border: 1px solid #ffb7c5; border-radius: 50%;
     pointer-events: none; z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    transition: width 0.25s ease, height 0.25s ease,
+                background 0.25s ease, border-color 0.25s ease,
+                box-shadow 0.25s ease;
     box-shadow: 0 0 15px #ffb7c5, inset 0 0 10px #ffb7c5;
     mix-blend-mode: screen;
-    will-change: left, top, width, height;
+    will-change: left, top;
   }
   .cursor-glow.hover {
     width: 44px; height: 44px;
@@ -34,7 +37,7 @@
     box-shadow: 0 0 25px #ffb7c5, inset 0 0 18px #ffb7c5;
   }
 
-  /* --- ФОН: ГИФКА + ДОЖДЬ --- */
+  /* --- ФОН: ГИФКА + НОЧЬ + МАТРИЦА --- */
   .bg-gif {
     position: absolute; inset: 0; width: 100%; height: 100%;
     background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2NrbnltanljYzB4ejBhczlxY3VmYzJhbGtrdHRscGJpbHN1bnp3eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7SN7VRxzzcby9nyKJV/giphy.gif');
@@ -42,7 +45,7 @@
     z-index: 1;
     filter: grayscale(100%) brightness(30%) contrast(120%);
     opacity: 0.6;
-    transition: opacity 1s ease, filter 1s ease;
+    transition: opacity 1.2s ease, filter 1.2s ease;
   }
   .bg-night {
     position: absolute; inset: 0; width: 100%; height: 100%;
@@ -50,69 +53,15 @@
     z-index: 2; transition: background 1.2s ease;
   }
 
-  /* --- ДОЖДЬ --- */
-  .rain-container {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    z-index: 3; pointer-events: none; overflow: hidden;
-  }
-  .drop {
-    position: absolute; top: -20px; width: 1px; height: 80px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 183, 197, 0.6));
-    animation: rainFall linear infinite;
-  }
-  @keyframes rainFall {
-    0% { transform: translateY(-100px); }
-    100% { transform: translateY(100vh); }
-  }
-
-  /* --- РАЗРЫВ: ЕСТЕСТВЕННАЯ ТРЕЩИНА --- */
-  .rift-container {
-    position: absolute; top: 8%; right: 3%; width: 220px; height: 80%;
-    z-index: 4; pointer-events: none;
-    filter: drop-shadow(0 0 25px rgba(255, 183, 197, 0.55)) drop-shadow(0 0 60px rgba(255, 183, 197, 0.25));
-    animation: riftBreath 4s ease-in-out infinite alternate;
-  }
-  @keyframes riftBreath {
-    0%   { filter: drop-shadow(0 0 15px rgba(255,183,197,0.35)) drop-shadow(0 0 40px rgba(255,183,197,0.15)); }
-    100% { filter: drop-shadow(0 0 35px rgba(255,183,197,0.75)) drop-shadow(0 0 90px rgba(255,183,197,0.35)); }
-  }
-
-  .rift-svg { width: 100%; height: 100%; display: block; }
-
-  /* Внутренняя тёмная «пустота» разрыва */
-  .rift-void {
-    fill: #000;
-    stroke: #ffb7c5;
-    stroke-width: 0.6;
-    stroke-linejoin: round;
-  }
-
-  /* Слой с символами — обрезается по форме трещины */
-  .rift-chars-layer {
+  /* Матричный дождь по всему фону */
+  #matrixCanvas {
     position: absolute; inset: 0;
-    clip-path: url(#riftClip);
-    -webkit-clip-path: url(#riftClip);
-    overflow: hidden;
-    display: flex;
-    justify-content: space-around;
-    padding: 0 14%;
-    opacity: 0.95;
-  }
-  .rift-col {
-    color: #ffb7c5;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.05;
-    text-shadow: 0 0 6px #ffb7c5, 0 0 14px rgba(255,183,197,0.6);
-    display: flex; flex-direction: column; align-items: center;
-    will-change: transform;
-    user-select: none;
-  }
-  .rift-col span {
-    display: block;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    will-change: transform, opacity;
+    width: 100%; height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    transition: opacity 1s ease;
   }
 
   /* --- АНИМЕ-ГЛАЗ (ХИЩНЫЙ) --- */
@@ -131,7 +80,6 @@
     transform: translate(-50%, -50%) scale(1);
   }
 
-  /* Форма глаза — «хищный» разрез */
   .eye-shape {
     position: absolute; inset: 0;
     background: #000;
@@ -146,14 +94,12 @@
     box-shadow: inset 0 0 40px #000, inset 0 0 80px rgba(255,0,0,0.25);
   }
 
-  /* Радужка */
   .iris {
     position: absolute; top: 50%; left: 50%;
     width: 120px; height: 120px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background:
-      radial-gradient(circle at 50% 45%, #ff3b3b 0%, #c40000 35%, #7a0000 65%, #2a0000 100%);
+    background: radial-gradient(circle at 50% 45%, #ff3b3b 0%, #c40000 35%, #7a0000 65%, #2a0000 100%);
     box-shadow:
       0 0 30px rgba(255, 0, 0, 0.8),
       inset 0 0 25px rgba(0, 0, 0, 0.7),
@@ -162,10 +108,9 @@
   }
   @keyframes irisPulse {
     0%   { box-shadow: 0 0 25px rgba(255,0,0,0.7), inset 0 0 25px rgba(0,0,0,0.7), inset 0 0 8px #ff8080; }
-    100% { box-shadow: 0 0 60px rgba(255,0,0,1),  inset 0 0 25px rgba(0,0,0,0.7), inset 0 0 14px #ffb0b0; }
+    100% { box-shadow: 0 0 60px rgba(255,0,0,1),   inset 0 0 25px rgba(0,0,0,0.7), inset 0 0 14px #ffb0b0; }
   }
 
-  /* Вертикальный зрачок-щель */
   .pupil {
     position: absolute; top: 50%; left: 50%;
     width: 14px; height: 78px;
@@ -180,7 +125,6 @@
     50%      { width: 10px; height: 66px; }
   }
 
-  /* Блик */
   .iris-shine {
     position: absolute; top: 30%; left: 32%;
     width: 26px; height: 22px;
@@ -189,18 +133,14 @@
     opacity: 0.9;
     filter: blur(1px);
   }
-  .iris-shine.small {
-    top: 58%; left: 62%; width: 12px; height: 10px; opacity: 0.6;
-  }
+  .iris-shine.small { top: 58%; left: 62%; width: 12px; height: 10px; opacity: 0.6; }
 
-  /* Верхнее веко (лёгкая тень) */
   .eyelid {
     position: absolute; top: 0; left: 0; width: 100%; height: 50%;
     background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
     pointer-events: none;
   }
 
-  /* Сетка/прожилки */
   .veins {
     position: absolute; inset: 0;
     background:
@@ -211,10 +151,7 @@
     opacity: 0.7;
     animation: veinsShift 5s ease-in-out infinite alternate;
   }
-  @keyframes veinsShift {
-    0% { opacity: 0.4; }
-    100% { opacity: 0.85; }
-  }
+  @keyframes veinsShift { 0% { opacity: 0.4; } 100% { opacity: 0.85; } }
 
   /* --- ГЛАВНОЕ ОКНО --- */
   .main-window {
@@ -231,7 +168,7 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 183, 197, 0.1);
     color: #fff; text-align: center;
     animation: windowBreath 7s ease-in-out infinite;
-    transition: opacity 0.6s ease, box-shadow 0.4s ease;
+    transition: opacity 0.6s ease;
     will-change: transform;
   }
   @keyframes windowBreath {
@@ -272,11 +209,13 @@
     display: flex; align-items: center; justify-content: center; gap: 10px;
     background: rgba(255, 255, 255, 0.03); color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 15px 20px; text-decoration: none;
+    padding: 15px 20px;
+    font-family: inherit;
     font-size: 14px; font-weight: 700; text-transform: uppercase;
     cursor: none; position: relative; overflow: hidden;
     border-radius: 8px; letter-spacing: 2px;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     transition:
       background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
       border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
@@ -287,7 +226,6 @@
     will-change: transform, box-shadow;
   }
 
-  /* Плавный «световой» блик */
   .btn::before {
     content: '';
     position: absolute; top: 0; left: -120%;
@@ -298,7 +236,6 @@
     pointer-events: none;
   }
 
-  /* Мягкое свечение по контуру */
   .btn::after {
     content: '';
     position: absolute; inset: 0;
@@ -308,15 +245,17 @@
     pointer-events: none;
   }
 
-  .btn:hover {
+  .btn:hover,
+  .btn:focus-visible {
     background: rgba(255, 183, 197, 0.12);
     border-color: #ffb7c5;
     color: #fff;
     letter-spacing: 3px;
     transform: translateY(-2px);
+    outline: none;
   }
-  .btn:hover::before { left: 160%; }
-  .btn:hover::after  { box-shadow: 0 0 28px rgba(255, 183, 197, 0.55); }
+  .btn:hover::before, .btn:focus-visible::before { left: 160%; }
+  .btn:hover::after,  .btn:focus-visible::after  { box-shadow: 0 0 28px rgba(255, 183, 197, 0.55); }
 
   .btn:active { transform: translateY(0) scale(0.985); }
 
@@ -411,9 +350,7 @@
   .damage-overlay.hit { animation: damageFlash 0.8s ease-out; }
   @keyframes damageFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
 
-  /* Мобильная адаптация */
   @media (max-width: 600px) {
-    .rift-container { right: -18%; opacity: 0.55; width: 160px; }
     .main-window { background: rgba(10, 10, 15, 0.62); }
     .eye-container { width: 260px; height: 150px; }
     .iris { width: 90px; height: 90px; }
@@ -426,57 +363,10 @@
   <div class="cursor-glow" id="cursorGlow"></div>
   <div class="damage-overlay" id="damageOverlay"></div>
 
-  <!-- ФОН: ГИФКА -->
+  <!-- ФОН -->
   <div class="bg-gif" id="bgGif"></div>
   <div class="bg-night" id="bgNight"></div>
-
-  <!-- ДОЖДЬ -->
-  <div class="rain-container" id="rainContainer"></div>
-
-  <!-- РАЗРЫВ: ЕСТЕСТВЕННАЯ ТРЕЩИНА -->
-  <div class="rift-container">
-    <!-- SVG-маска для рваных краёв -->
-    <svg width="0" height="0" style="position:absolute">
-      <defs>
-        <clipPath id="riftClip" clipPathUnits="objectBoundingBox">
-          <path d="
-            M0.50,0.00
-            L0.62,0.04 L0.55,0.08 L0.70,0.12 L0.58,0.16
-            L0.74,0.21 L0.60,0.25 L0.78,0.30 L0.62,0.34
-            L0.82,0.39 L0.66,0.44 L0.86,0.49 L0.68,0.54
-            L0.88,0.59 L0.70,0.64 L0.86,0.69 L0.68,0.74
-            L0.84,0.79 L0.66,0.84 L0.80,0.89 L0.62,0.94
-            L0.72,0.98 L0.55,1.00
-            L0.42,0.96 L0.50,0.92 L0.36,0.88 L0.48,0.84
-            L0.32,0.80 L0.44,0.76 L0.28,0.72 L0.42,0.68
-            L0.24,0.64 L0.40,0.60 L0.20,0.56 L0.38,0.52
-            L0.16,0.48 L0.36,0.44 L0.14,0.40 L0.34,0.36
-            L0.16,0.32 L0.36,0.28 L0.18,0.24 L0.38,0.20
-            L0.22,0.16 L0.40,0.12 L0.26,0.08 L0.42,0.04
-            Z" />
-        </clipPath>
-      </defs>
-    </svg>
-
-    <svg class="rift-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <path class="rift-void" d="
-        M50,0
-        L62,4 L55,8 L70,12 L58,16
-        L74,21 L60,25 L78,30 L62,34
-        L82,39 L66,44 L86,49 L68,54
-        L88,59 L70,64 L86,69 L68,74
-        L84,79 L66,84 L80,89 L62,94
-        L72,98 L55,100
-        L42,96 L50,92 L36,88 L48,84
-        L32,80 L44,76 L28,72 L42,68
-        L24,64 L40,60 L20,56 L38,52
-        L16,48 L36,44 L14,40 L34,36
-        L16,32 L36,28 L18,24 L38,20
-        L22,16 L40,12 L26,8 L42,4 Z" />
-    </svg>
-
-    <div class="rift-chars-layer" id="riftChars"></div>
-  </div>
+  <canvas id="matrixCanvas"></canvas>
 
   <div class="heart-container" id="heartContainer">
     <img class="heart-img" src="https://i.imgur.com/8Q4ZqKq.png" alt="heart">
@@ -505,26 +395,26 @@
     <p class="subtitle-ru">СИСТЕМА АКТИВНА</p>
 
     <div class="button-group">
-      <button onclick="triggerEyeSequence()" class="btn">
+      <button id="btnDm" class="btn" type="button">
         <span>НАПИСАТЬ В ЛС</span>
       </button>
-      <button onclick="startHeartAttack()" class="btn" style="width: 100%;">
+      <button id="btnBio" class="btn" type="button" style="width: 100%;">
         <span>МОЯ БИОГРАФИЯ</span>
       </button>
     </div>
   </div>
 
-  <div class="modal-overlay" id="bioOverlay" onclick="closeBio()"></div>
+  <div class="modal-overlay" id="bioOverlay"></div>
 
   <!-- ОКНО БИОГРАФИИ -->
   <div class="bio-modal" id="bioModal">
     <div class="bio-header">
-      <span>СЕКРЕТНЫЙ ФАЙЛ</span>
-      <button class="close-btn" onclick="closeBio()">[ X ]</button>
+      <span id="bioTitle">СЕКРЕТНЫЙ ФАЙЛ</span>
+      <button class="close-btn" id="btnCloseBio" type="button">[ X ]</button>
     </div>
 
     <div class="bio-content-wrapper">
-      <button class="decrypt-btn" id="decryptBtn" onclick="triggerHit()">РАСШИФРОВАТЬ</button>
+      <button class="decrypt-btn" id="decryptBtn" type="button">РАСШИФРОВАТЬ</button>
 
       <div class="secret-data" id="secretData">
         <div class="data-row">
@@ -552,27 +442,172 @@
     </div>
 
     <div class="status-bar">
-      <span>СИСТЕМА: ЗАЩИЩЕНА</span>
+      <span id="statusLeft">СИСТЕМА: ЗАЩИЩЕНА</span>
       <span>БЕЗОПАСНАЯ ЛИНИЯ</span>
     </div>
   </div>
 
   <script>
-    /* =========================================================
-       1. КУРСОР (плавный, без дёрганья)
-       ========================================================= */
-    const cursor = document.getElementById('cursorGlow');
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    let curX = mouseX, curY = mouseY;
+  (function () {
+    'use strict';
 
-    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-    document.addEventListener('touchmove', (e) => {
-      const t = e.touches[0];
-      mouseX = t.clientX; mouseY = t.clientY;
+    /* =========================================================
+       1. КУРСОР — плавный lerp-догон
+       ========================================================= */
+    var cursor = document.getElementById('cursorGlow');
+    var mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    var curX = mouseX, curY = mouseY;
+
+    document.addEventListener('mousemove', function (e) {
+      mouseX = e.clientX; mouseY = e.clientY;
+    });
+    document.addEventListener('touchmove', function (e) {
+      var t = e.touches[0];
+      if (t) { mouseX = t.clientX; mouseY = t.clientY; }
     }, { passive: true });
 
     function cursorLoop() {
-      // мягкое сглаживание — курсор «догоняет» мышь, а не дёргается
       curX += (mouseX - curX) * 0.25;
       curY += (mouseY - curY) * 0.25;
-      cursor.style
+      cursor.style.left = curX + 'px';
+      cursor.style.top  = curY + 'px';
+      requestAnimationFrame(cursorLoop);
+    }
+    requestAnimationFrame(cursorLoop);
+
+    // Наведение на интерактивные элементы — увеличение курсора
+    function bindCursorHover(el) {
+      el.addEventListener('mouseenter', function () { cursor.classList.add('hover'); });
+      el.addEventListener('mouseleave', function () { cursor.classList.remove('hover'); });
+    }
+    document.querySelectorAll('.btn, .decrypt-btn, .close-btn').forEach(bindCursorHover);
+
+    /* =========================================================
+       2. МАТРИЧНЫЙ ДОЖДЬ НА CANVAS (плавный, без дёрганья)
+       ========================================================= */
+    var canvas = document.getElementById('matrixCanvas');
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    var fontSize = 16;
+    var columns = 0;
+    var drops = [];
+    var chars = '01!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZアイウエオカキクケコサシスセソタチツテト';
+    var lastFrame = 0;
+    var frameInterval = 1000 / 30; // 30 fps — плавно и не грузит
+
+    function resizeCanvas() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      canvas.width  = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width  = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      columns = Math.floor(w / fontSize);
+      drops = [];
+      for (var i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -50; // старт выше экрана
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function drawMatrix(now) {
+      requestAnimationFrame(drawMatrix);
+      if (now - lastFrame < frameInterval) return;
+      lastFrame = now;
+
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+
+      // Полупрозрачная заливка — создаёт «шлейф» и плавное затухание
+      ctx.fillStyle = 'rgba(5, 5, 8, 0.12)';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.font = fontSize + 'px "Courier Prime", monospace';
+      ctx.textBaseline = 'top';
+
+      for (var i = 0; i < drops.length; i++) {
+        var ch = chars.charAt(Math.floor(Math.random() * chars.length));
+        var x = i * fontSize;
+        var y = drops[i] * fontSize;
+
+        // Головной символ — яркий
+        ctx.fillStyle = 'rgba(255, 220, 230, 0.95)';
+        ctx.shadowColor = '#ffb7c5';
+        ctx.shadowBlur = 10;
+        ctx.fillText(ch, x, y);
+
+        // Хвост — розовый, чуть тусклее
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(255, 183, 197, 0.55)';
+        ctx.fillText(ch, x, y - fontSize);
+
+        if (y > h + Math.random() * 300) {
+          drops[i] = Math.random() * -20;
+        } else {
+          drops[i] += 0.6 + Math.random() * 0.4; // плавная скорость
+        }
+      }
+      ctx.shadowBlur = 0;
+    }
+    requestAnimationFrame(drawMatrix);
+
+    /* =========================================================
+       3. ЗВУК — низкий гул для сцены с глазом
+       ========================================================= */
+    var audioCtx = null;
+    function playHorrorSound() {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        if (!audioCtx) audioCtx = new AC();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var t = audioCtx.currentTime;
+        var osc1 = audioCtx.createOscillator();
+        var osc2 = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        var filter = audioCtx.createBiquadFilter();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'sine';
+
+        osc1.frequency.setValueAtTime(55, t);
+        osc1.frequency.exponentialRampToValueAtTime(30, t + 3.2);
+
+        osc2.frequency.setValueAtTime(160, t);
+        osc2.frequency.exponentialRampToValueAtTime(40, t + 3.2);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(400, t);
+        filter.frequency.exponentialRampToValueAtTime(120, t + 3.2);
+
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.25, t + 0.8);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 3.4);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(t);
+        osc2.start(t);
+        osc1.stop(t + 3.5);
+        osc2.stop(t + 3.5);
+      } catch (e) {
+        // Звук может быть заблокирован — не критично
+        console.warn('Audio blocked:', e);
+      }
+    }
+
+    /* =========================================================
+       4. СЦЕНАРИЙ С ГЛАЗОМ + РЕДИРЕКТ В TELEGRAM
+       ========================================================= */
+    var mainWindow = document.getElementById('mainWindow');
+    var eyeContainer = document.getElementById('eyeContainer');
+    var bgNight = document.getElementById('bgNight');
+    var bgGif = document.getElementById('bgGif
