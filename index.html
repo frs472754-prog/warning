@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zero.ping // Профиль</title>
+<title>Zero.ping // Terminal</title>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   
   body, html {
     margin: 0; padding: 0; width: 100%; height: 100vh;
-    background-color: #0a0a12; overflow: hidden;
-    font-family: 'Courier Prime', monospace; /* Строгий шрифт для матрицы */
+    background-color: #050508; overflow: hidden;
+    font-family: 'Courier Prime', monospace;
     position: fixed; top: 0; left: 0;
     cursor: none;
   }
 
-  /* --- КУРСОР И ШЛЕЙФ --- */
+  /* --- КУРСОР --- */
   .cursor-glow {
     position: fixed; width: 20px; height: 20px;
     border: 1px solid #ffb7c5; border-radius: 50%;
@@ -27,61 +27,66 @@
     mix-blend-mode: screen;
   }
   
-  /* --- ФОН: НОЧЬ И САКУРА --- */
+  /* --- ФОН: ГИФКА + ДОЖДЬ + РАЗРЫВ --- */
+  .bg-gif {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2NrbnltanljYzB4ejBhczlxY3VmYzJhbGtrdHRscGJpbHN1bnp3eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7SN7VRxzzcby9nyKJV/giphy.gif');
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    filter: grayscale(100%) brightness(30%) contrast(120%);
+    opacity: 0.6;
+  }
+
   .bg-night {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, #0a0a12 0%, #1a1a2e 50%, #16162a 100%);
-    z-index: 1; transition: opacity 1s ease;
+    background: radial-gradient(circle at 50% 50%, rgba(17, 17, 34, 0.4) 0%, rgba(5, 5, 8, 0.9) 100%);
+    z-index: 2; transition: opacity 1s ease;
   }
 
-  .moon {
-    position: absolute; top: 15%; right: 15%; width: 100px; height: 100px;
-    background: #fff; border-radius: 50%;
-    box-shadow: 0 0 50px 10px rgba(255, 255, 255, 0.3), inset -15px -15px 0 0 rgba(0,0,0,0.2);
-    z-index: 2; transition: opacity 1s;
-  }
-
-  /* --- СЛОМАННАЯ МАТРИЦА (ЭФФЕКТ ДЫР) --- */
-  .matrix-container {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 4; pointer-events: none; display: flex; flex-wrap: wrap;
-    overflow: hidden; opacity: 0.4;
-  }
-  /* Создаем "дыры" (разрывы), в которых бегут символы */
-  .matrix-hole {
-    position: absolute;
-    overflow: hidden;
-    border: 1px solid rgba(255, 183, 197, 0.2);
-    box-shadow: inset 0 0 20px rgba(255, 183, 197, 0.2);
-    background: rgba(0, 0, 0, 0.6);
-    display: flex; flex-direction: column;
-  }
-  .matrix-column {
-    width: 100%; text-align: center; color: #ffb7c5; font-size: 14px;
-    text-shadow: 0 0 5px #ffb7c5;
-    animation: matrixFall linear infinite;
-  }
-  @keyframes matrixFall {
-    0% { transform: translateY(-100%); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(100%); opacity: 0; }
-  }
-
-  /* Сакура */
-  .sakura-container {
+  /* --- ДОЖДЬ --- */
+  .rain-container {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 3; pointer-events: none; overflow: hidden;
   }
-  .petal {
-    position: absolute; top: -20px; background-color: #ffb7c5;
-    border-radius: 15px 0 15px 0;
-    opacity: 0.8; box-shadow: 0 0 5px rgba(255, 183, 197, 0.5);
+  .drop {
+    position: absolute; top: -20px; width: 1px; height: 80px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 183, 197, 0.6));
+    animation: rainFall linear infinite;
   }
-  @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-    10% { opacity: 0.8; }
-    100% { transform: translateY(100vh) rotate(360deg) translateX(50px); opacity: 0; }
+  @keyframes rainFall {
+    0% { transform: translateY(-100px); }
+    100% { transform: translateY(100vh); }
+  }
+
+  /* --- РАЗРЫВ СПРАВА (МАТРИЦА) --- */
+  .rift-container {
+    position: absolute; top: 15%; right: 5%; width: 250px; height: 70%;
+    z-index: 4; pointer-events: none;
+    border-left: 2px solid #ffb7c5; border-right: 2px solid #ffb7c5;
+    box-shadow: 0 0 40px rgba(255, 183, 197, 0.4), inset 0 0 60px rgba(0,0,0,1);
+    background: #000;
+    clip-path: polygon(
+      10% 0%, 90% 0%, 100% 10%, 95% 20%, 100% 30%, 90% 40%, 100% 50%, 
+      95% 60%, 100% 70%, 90% 80%, 100% 90%, 90% 100%, 
+      10% 100%, 0% 90%, 5% 80%, 0% 70%, 10% 60%, 0% 50%, 
+      5% 40%, 0% 30%, 10% 20%, 0% 10%
+    );
+    overflow: hidden; display: flex; justify-content: center;
+    animation: riftPulse 3s infinite alternate;
+  }
+  @keyframes riftPulse {
+    0% { box-shadow: 0 0 20px rgba(255, 183, 197, 0.2), inset 0 0 40px #000; }
+    100% { box-shadow: 0 0 70px rgba(255, 183, 197, 0.7), inset 0 0 60px #000; }
+  }
+  .rift-matrix { display: flex; gap: 10px; width: 100%; height: 100%; justify-content: center; opacity: 0.9; }
+  .rift-column { color: #ffb7c5; font-size: 18px; font-weight: bold; text-shadow: 0 0 8px #ffb7c5; display: flex; flex-direction: column; align-items: center; }
+  .rift-column span { animation: fallDown linear infinite; }
+  @keyframes fallDown {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
   }
 
   /* --- ГЛАЗ --- */
@@ -118,73 +123,114 @@
   }
   @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-  /* --- ГЛАВНОЕ ОКНО --- */
+  /* --- ГЛАВНОЕ ОКНО (GLASSMORPHISM) --- */
   .main-window {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 90%; max-width: 380px; 
-    background: rgba(15, 15, 25, 0.9); backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 183, 197, 0.4); border-radius: 4px;
-    padding: 30px 25px; z-index: 10;
-    box-shadow: 0 0 30px rgba(255, 183, 197, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    background: rgba(10, 10, 15, 0.4); /* Полупрозрачный фон */
+    backdrop-filter: blur(15px); /* Сильное размытие */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 183, 197, 0.5);
+    border-radius: 16px; /* Более скругленные углы */
+    padding: 35px 25px; z-index: 10;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 183, 197, 0.1);
     color: #fff; text-align: center; 
-    animation: float 6s ease-in-out infinite; transition: opacity 0.5s;
+    animation: float 6s ease-in-out infinite;
+    transition: opacity 0.5s, transform 0.3s;
   }
-  @keyframes float { 0%, 100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-10px); } }
+  
+  /* Легкий 3D-наклон при наведении на окно (эффект стекла) */
+  .main-window:hover {
+    transform: translate(-50%, -50%) perspective(1000px) rotateX(2deg) rotateY(-2deg);
+  }
+
+  @keyframes float { 
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); } 
+    50% { transform: translate(-50%, -50%) translateY(-10px); } 
+  }
 
   .avatar-container {
-    position: relative; width: 85px; height: 85px; margin: 0 auto 15px auto;
-    transition: transform 0.3s ease;
+    position: relative; width: 90px; height: 90px; margin: 0 auto 15px auto;
+    border-radius: 50%; padding: 3px;
+    background: linear-gradient(45deg, #ffb7c5, #fff, #ffb7c5);
+    background-size: 200% 200%;
+    animation: gradientBorder 3s linear infinite;
   }
-  .avatar-container:hover { transform: scale(1.1); }
+  @keyframes gradientBorder {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  
   .main-window img {
     width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
-    border: 2px solid #ffb7c5; box-shadow: 0 0 15px rgba(255, 183, 197, 0.5);
+    background: #000;
   }
+
   .main-window h1 { 
-    margin: 0; font-size: 24px; letter-spacing: 4px; color: #fff; 
-    text-shadow: 0 0 10px rgba(255, 183, 197, 0.8);
-    font-weight: 400; font-family: 'Playfair Display', serif;
+    margin: 0; font-size: 26px; letter-spacing: 5px; color: #fff; 
+    text-shadow: 0 0 15px rgba(255, 183, 197, 0.8);
+    font-weight: 700; font-family: 'Playfair Display', serif;
   }
-  .subtitle-ru { font-size: 14px; color: #ffb7c5; margin: 5px 0 25px; letter-spacing: 2px; }
+  .subtitle-ru { 
+    font-size: 12px; color: #ffb7c5; margin: 5px 0 30px; letter-spacing: 3px; 
+    text-transform: uppercase; opacity: 0.8;
+  }
 
   .button-group { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+  
+  /* Кнопки в стиле неонового стекла */
   .btn {
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    background: rgba(255, 183, 197, 0.05); color: #fff; 
-    border: 1px solid rgba(255, 183, 197, 0.5); 
-    padding: 14px 20px; text-decoration: none; 
-    font-size: 15px; font-weight: normal; text-transform: none; 
-    transition: all 0.4s ease; cursor: none; position: relative; 
-    border-radius: 2px; letter-spacing: 2px;
+    background: rgba(255, 255, 255, 0.03); color: #fff; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 15px 20px; text-decoration: none; 
+    font-size: 14px; font-weight: 700; text-transform: uppercase; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    cursor: none; position: relative; 
+    border-radius: 8px; letter-spacing: 2px;
+    backdrop-filter: blur(5px);
   }
+  
+  .btn::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 183, 197, 0.2), transparent);
+    transform: translateX(-100%); transition: 0.5s; border-radius: 8px;
+  }
+  
   .btn:hover { 
-    background: rgba(255, 183, 197, 0.15); box-shadow: 0 0 20px rgba(255, 183, 197, 0.4); 
-    border-color: #ffb7c5; color: #ffb7c5;
+    background: rgba(255, 183, 197, 0.1); 
+    border-color: #ffb7c5;
+    box-shadow: 0 0 25px rgba(255, 183, 197, 0.5); 
+    color: #fff;
+    transform: translateY(-2px);
   }
+  .btn:hover::before { transform: translateX(100%); }
 
   /* --- БИОГРАФИЯ --- */
   .bio-modal {
     display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 92%; max-width: 400px; background: rgba(10, 10, 15, 0.98);
-    border: 1px solid #ffb7c5; border-top: 3px solid #ffb7c5;
-    border-radius: 4px; padding: 20px; z-index: 100;
-    box-shadow: 0 0 40px rgba(255, 183, 197, 0.2); text-align: left;
+    width: 92%; max-width: 400px; background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid #ffb7c5; border-top: 4px solid #ffb7c5;
+    border-radius: 12px; padding: 25px; z-index: 100;
+    box-shadow: 0 0 50px rgba(255, 183, 197, 0.3); text-align: left;
     font-family: 'Courier Prime', monospace; max-height: 85vh; overflow-y: auto;
   }
-  .bio-modal.show { display: block; animation: terminalOpen 0.3s ease-out forwards; }
+  .bio-modal.show { display: block; animation: terminalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
   @keyframes terminalOpen {
-    0% { opacity: 0; transform: translate(-50%, -50%) scaleY(0); }
-    100% { opacity: 1; transform: translate(-50%, -50%) scaleY(1); }
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   }
   .bio-header {
-    color: #ffb7c5; font-size: 16px; border-bottom: 1px dashed rgba(255, 183, 197, 0.3); padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+    color: #ffb7c5; font-size: 18px; border-bottom: 1px dashed rgba(255, 183, 197, 0.3); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold;
   }
-  .bio-content-wrapper { position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .bio-content-wrapper { position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
   .secret-data { display: none; width: 100%; text-align: left; }
-  .data-row { margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 6px; }
-  .label { color: #ffb7c5; text-transform: uppercase; font-size: 11px; margin-bottom: 3px; display: block;}
-  .value { color: #fff; font-weight: bold; display: block; font-size: 13px;}
-  .encrypted { color: #ffb7c5; font-family: 'Courier Prime', monospace; letter-spacing: 1px; }
+  .data-row { margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px; }
+  .label { color: #ffb7c5; text-transform: uppercase; font-size: 12px; margin-bottom: 4px; display: block; letter-spacing: 1px;}
+  .value { color: #fff; font-weight: bold; display: block; font-size: 14px;}
+  .encrypted { color: #ffb7c5; font-family: 'Courier Prime', monospace; letter-spacing: 2px; }
 
   .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
   @keyframes shake {
@@ -194,32 +240,32 @@
     40%, 60% { transform: translate(-50%, -50%) translate3d(8px, 0, 0); }
   }
   .denied-message {
-    display: none; text-align: center; color: #ff4444; font-weight: bold; font-size: 16px;
-    text-shadow: 0 0 10px #ff4444; animation: blinkRed 0.4s infinite; line-height: 1.5;
+    display: none; text-align: center; color: #ff4444; font-weight: bold; font-size: 18px;
+    text-shadow: 0 0 15px #ff4444; animation: blinkRed 0.4s infinite; line-height: 1.6;
   }
   @keyframes blinkRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   .decrypt-btn {
-    background: #ffb7c5; color: #000; border: none; padding: 12px 25px;
-    font-family: 'Courier Prime', monospace; font-size: 14px; font-weight: bold; cursor: pointer;
-    text-transform: uppercase; box-shadow: 0 0 15px rgba(255, 183, 197, 0.5);
-    transition: 0.3s; border-radius: 2px;
+    background: #ffb7c5; color: #000; border: none; padding: 15px 30px;
+    font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: bold; cursor: pointer;
+    text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 183, 197, 0.6);
+    transition: 0.3s; border-radius: 8px; letter-spacing: 2px;
   }
-  .decrypt-btn:hover { background: #fff; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+  .decrypt-btn:hover { background: #fff; box-shadow: 0 0 40px rgba(255, 255, 255, 1); transform: scale(1.05); }
   .close-btn {
-    background: transparent; color: #ffb7c5; border: 1px solid #ffb7c5; padding: 5px 10px;
-    font-family: 'Courier Prime', monospace; font-size: 12px; cursor: pointer;
-    transition: 0.2s; text-transform: uppercase; border-radius: 2px;
+    background: transparent; color: #ffb7c5; border: 1px solid #ffb7c5; padding: 5px 12px;
+    font-family: 'Courier Prime', monospace; font-size: 14px; cursor: pointer;
+    transition: 0.2s; text-transform: uppercase; border-radius: 4px;
   }
   .close-btn:hover { background: #ffb7c5; color: #000; }
   .modal-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85); z-index: 90; backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.7); z-index: 90; backdrop-filter: blur(10px);
   }
   .modal-overlay.show { display: block; }
   .status-bar {
-    margin-top: 15px; border-top: 1px dashed rgba(255, 183, 197, 0.2); padding-top: 10px;
+    margin-top: 20px; border-top: 1px dashed rgba(255, 183, 197, 0.2); padding-top: 15px;
     font-size: 11px; color: #ffb7c5; display: flex; justify-content: space-between;
-    animation: blinkWhite 3s infinite;
+    animation: blinkWhite 3s infinite; letter-spacing: 1px;
   }
   @keyframes blinkWhite { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -228,24 +274,30 @@
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
     z-index: 9999; pointer-events: none;
   }
-  .heart-img { width: 100px; image-rendering: pixelated; }
+  .heart-img { width: 120px; image-rendering: pixelated; }
   .heart-container.show { animation: heartPop 1.2s forwards; }
   @keyframes heartPop {
     0% { transform: translate(-50%, -50%) scale(0); }
     20% { transform: translate(-50%, -50%) scale(1.2); }
-    30% { transform: translate(-50%, -50%) scale(1) translateX(-10px); }
-    40% { transform: translate(-50%, -50%) scale(1) translateX(10px); }
+    30% { transform: translate(-50%, -50%) scale(1) translateX(-15px); }
+    40% { transform: translate(-50%, -50%) scale(1) translateX(15px); }
     50% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.5); }
     60% { transform: translate(-50%, -50%) scale(1); }
-    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; filter: blur(5px); }
+    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; filter: blur(8px); }
   }
   .damage-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.5) 100%);
+    background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.6) 100%);
     z-index: 9998; pointer-events: none; opacity: 0;
   }
   .damage-overlay.hit { animation: damageFlash 0.8s ease-out; }
   @keyframes damageFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
+  
+  /* Мобильная адаптация */
+  @media (max-width: 600px) {
+    .rift-container { right: -20%; opacity: 0.5; }
+    .main-window { background: rgba(10, 10, 15, 0.6); } /* Чуть темнее на телефонах для читаемости */
+  }
 </style>
 </head>
 <body>
@@ -253,8 +305,17 @@
   <div class="cursor-glow" id="cursorGlow"></div>
   <div class="damage-overlay" id="damageOverlay"></div>
 
-  <!-- СЛОМАННАЯ МАТРИЦА -->
-  <div class="matrix-container" id="matrixContainer"></div>
+  <!-- ФОН: ГИФКА -->
+  <div class="bg-gif" id="bgGif"></div>
+  <div class="bg-night" id="bgNight"></div>
+
+  <!-- ДОЖДЬ -->
+  <div class="rain-container" id="rainContainer"></div>
+
+  <!-- РАЗРЫВ СПРАВА (МАТРИЦА) -->
+  <div class="rift-container">
+    <div class="rift-matrix" id="riftMatrix"></div>
+  </div>
 
   <div class="heart-container" id="heartContainer">
     <img class="heart-img" src="https://i.imgur.com/8Q4ZqKq.png" alt="heart">
@@ -263,11 +324,6 @@
   <div class="eye-container" id="eyeContainer">
     <div class="eye"></div>
   </div>
-
-  <div class="bg-night" id="bgNight"></div>
-  <div class="moon" id="moon"></div>
-  
-  <div class="sakura-container" id="sakuraContainer"></div>
 
   <!-- ГЛАВНОЕ ОКНО -->
   <div class="main-window" id="mainWindow">
@@ -353,74 +409,83 @@
       });
     });
 
-    // --- ПАДАЮЩИЕ ЛЕПЕСТКИ ---
-    const sakuraContainer = document.getElementById('sakuraContainer');
-    function createPetal() {
-      const petal = document.createElement('div');
-      petal.classList.add('petal');
-      const size = Math.random() * 8 + 6;
-      petal.style.width = size + 'px'; petal.style.height = size + 'px';
-      petal.style.left = Math.random() * 100 + 'vw';
-      const duration = Math.random() * 4 + 4;
-      petal.style.animation = `fall ${duration}s linear forwards`;
-      petal.style.animationDelay = Math.random() * 2 + 's';
-      petal.style.opacity = Math.random() * 0.5 + 0.3;
-      sakuraContainer.appendChild(petal);
-      setTimeout(() => { petal.remove(); }, duration * 1000);
-    }
-    setInterval(createPetal, 300);
+    // --- ДОЖДЬ ---
+    const rainContainer = document.getElementById('rainContainer');
+    function createDrop() {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      
+      // Случайная позиция по горизонтали
+      drop.style.left = Math.random() * 100 + 'vw';
+      
+      // Случайная высота и скорость
+      const height = Math.random() * 60 + 40;
+      drop.style.height = height + 'px';
+      const duration = Math.random() * 0.5 + 0.5; // Быстрый дождь
+      drop.style.animation = `rainFall ${duration}s linear infinite`;
+      drop.style.animationDelay = Math.random() * 2 + 's';
+      
+      // Разная прозрачность
+      drop.style.opacity = Math.random() * 0.5 + 0.3;
 
-    // --- СЛОМАННАЯ МАТРИЦА (СОЗДАНИЕ ДЫР) ---
-    const matrixContainer = document.getElementById('matrixContainer');
+      rainContainer.appendChild(drop);
+
+      // Удаляем каплю после завершения
+      setTimeout(() => {
+        drop.remove();
+      }, 3000);
+    }
+    
+    // Постоянно создаем капли
+    setInterval(createDrop, 50); 
+
+    // --- МАТРИЦА В РАЗРЫВЕ ---
+    const riftMatrix = document.getElementById('riftMatrix');
     const chars = '01!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    function createMatrixHole() {
-      const hole = document.createElement('div');
-      hole.classList.add('matrix-hole');
-      
-      // Рандомные размеры и позиции дыр
-      const width = Math.random() * 60 + 20; // 20 - 80px
-      const height = Math.random() * 150 + 50; // 50 - 200px
-      
-      hole.style.width = width + 'px';
-      hole.style.height = height + 'px';
-      hole.style.left = Math.random() * 90 + 'vw'; // По всему экрану
-      hole.style.top = Math.random() * 90 + 'vh';
-
-      // Создаем внутри колонки с символами
-      const numColumns = Math.floor(width / 15); // сколько символов влезет
+    function initRiftMatrix() {
+      riftMatrix.innerHTML = '';
+      const numColumns = 8;
       for (let i = 0; i < numColumns; i++) {
         const col = document.createElement('div');
-        col.classList.add('matrix-column');
-        col.style.animationDuration = (Math.random() * 2 + 1) + 's'; // Скорость падения
-        col.style.animationDelay = (Math.random() * 2) + 's';
-        col.textContent = chars[Math.floor(Math.random() * chars.length)];
-        hole.appendChild(col);
+        col.classList.add('rift-column');
+        
+        for (let j = 0; j < 20; j++) {
+          const span = document.createElement('span');
+          span.textContent = chars[Math.floor(Math.random() * chars.length)];
+          span.style.animationDuration = (Math.random() * 2 + 1) + 's';
+          span.style.animationDelay = (Math.random() * -2) + 's';
+          span.style.opacity = Math.random() * 0.5 + 0.5;
+          col.appendChild(span);
+        }
+        riftMatrix.appendChild(col);
       }
-
-      matrixContainer.appendChild(hole);
-
-      // Удаляем дыру через 5 секунд
-      setTimeout(() => {
-        hole.remove();
-      }, 5000);
     }
-
-    // Создаем дыры с матрицей
-    setInterval(createMatrixHole, 1000); // Новая дыра каждую секунду
+    initRiftMatrix();
+    
+    setInterval(() => {
+      const spans = riftMatrix.querySelectorAll('span');
+      spans.forEach(span => {
+        if (Math.random() > 0.8) {
+          span.textContent = chars[Math.floor(Math.random() * chars.length)];
+        }
+      });
+    }, 200);
 
     // --- СЦЕНАРИЙ С ГЛАЗОМ И ЗВУКОМ ---
     function triggerEyeSequence() {
       const mainWindow = document.getElementById('mainWindow');
       const eyeContainer = document.getElementById('eyeContainer');
       const bgNight = document.getElementById('bgNight');
-      const moon = document.getElementById('moon');
+      const bgGif = document.getElementById('bgGif');
 
       playHorrorSound();
 
       mainWindow.style.opacity = '0';
-      moon.style.opacity = '0';
       setTimeout(() => { mainWindow.style.display = 'none'; }, 500);
+      
+      // Затемняем фон
+      bgGif.style.opacity = '0';
       bgNight.style.background = 'radial-gradient(circle at 50% 50%, #300000 0%, #000 80%)';
 
       eyeContainer.classList.add('active');
