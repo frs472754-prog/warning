@@ -1,33 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Security Warning</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
-  body { margin: 0; height: 100vh; overflow: hidden; background-color: #000; font-family: 'Share Tech Mono', monospace; display: flex; align-items: center; justify-content: center; }
-  .bg-gif { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2NrbnltanljYzB4ejBhczlxY3VmYzJhbGtrdHRscGJpbHN1bnp3eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7SN7VRxzzcby9nyKJV/giphy.gif'); background-size: cover; background-position: center; z-index: 0; filter: grayscale(100%) contrast(120%) brightness(30%); }
-  .noise { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Noise.png'); opacity: 0.1; z-index: 1; pointer-events: none; }
-  .warning-container { position: relative; z-index: 10; width: 90%; max-width: 480px; }
-  .warning { position: relative; padding: 25px 30px; background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(5px); border: 1px solid #e0e0e0; border-left: 4px solid #ffffff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); text-align: left; animation: glitch 5s infinite; }
-  @keyframes glitch { 0%, 100% { transform: translate(0); } 2% { transform: translate(-1px, 1px); } 4% { transform: translate(1px, -1px); } 6% { transform: translate(0); } }
-  .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-  .avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #e0e0e0; object-fit: cover; background-color: #222; }
-  .title-group { display: flex; flex-direction: column; }
-  .title { font-size: 22px; letter-spacing: 2px; color: #ffffff; margin: 0; text-transform: uppercase; font-family: 'VT323', monospace; }
-  .subtitle { font-size: 12px; color: #888; letter-spacing: 1px; margin-top: 2px; }
-  .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #888; }
-  .info-row span:last-child { color: #e0e0e0; }
-  .alert-text { margin-top: 20px; font-size: 15px; color: #e0e0e0; line-height: 1.5; background: rgba(255, 255, 255, 0.05); padding: 15px; border-left: 2px solid #666; }
-  .terminal-box { margin-top: 15px; background: #000; padding: 8px; border: 1px solid #333; display: flex; align-items: center; }
-  .terminal-prompt { color: #fff; margin-right: 8px; font-weight: bold; }
-  .terminal-log { font-size: 12px; color: #a0a0a0; font-family: 'Courier New', monospace; white-space: nowrap; overflow: hidden; border-right: 2px solid #fff; animation: typing 5s steps(40, end) infinite; }
-  @keyframes typing { from { width: 0 } to { width: 100% } }
-  .footer { margin-top: 25px; display: flex; justify-content: space-between; align-items: center; }
-  .btn-tg { background: transparent; color: #e0e0e0; border: 1px solid #e0e0e0; padding: 8px 16px; font-family: 'Share Tech Mono', monospace; font-size: 14px; text-decoration: none; text-transform: uppercase; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-  .btn-tg:hover { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255,255,255,0.4); }
-  .signature { font-size: 11px; color: #666; text-align: right; font-style: italic; }
-  .scan { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-  .scan::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: #ffffff; box-shadow: 0 0 8px #ffffff; animation: scan 4s linear infinite; opacity: 0.3; }
-  @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Error</title>
+    <style>
+        /* Сброс отступов и черный фон */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Слой для падающих символов */
+        #matrix-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Само окно поверх символов */
+        .window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 420px;
+            background: rgba(10, 10, 10, 0.95); /* Темный фон окна */
+            border: 2px solid #333;
+            border-left: 4px solid #ff2b2b; /* Красная полоска */
+            padding: 25px;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(255, 43, 43, 0.2);
+            color: #fff;
+        }
+
+        /* Шапка с аватаркой */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            object-fit: cover;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #ff2b2b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Строки с информацией */
+        .info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .info span:last-child {
+            color: #fff;
+        }
+
+        /* Текст предупреждения */
+        .alert {
+            background: #1a1a1a;
+            padding: 15px;
+            border-left: 2px solid #666;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        /* Кнопка и подпись */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 8px 16px;
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .sign {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Холст для Матрицы -->
+    <canvas id="matrix-bg"></canvas>
+
+    <!-- Твое окно -->
+    <div class="window">
+        <div class="header">
+            <img class="avatar" src="https://i.imgur.com/lTlIJP7.jpeg" alt="avatar">
+            <div>
+                <h1 class="title">SYSTEM ERROR</h1>
+                <div class="subtitle">Connection compromised</div>
+            </div>
+        </div>
+
+        <div class="info"><span>Target URL:</span> <span>zero.ping/again</span></div>
+        <div class="info"><span>Status:</span> <span style="color: #ff2b2b;">Suspicious Activity</span></div>
+        <div class="info"><span>Threat:</span> <span>Potential Malware</span></div>
+
+        <div class="alert">
+            The website you are trying to visit contains malicious content. I warned you. Why are you still here?
+        </div>
+        <div class="footer">
+<a href="https://t.me/lobbyDredmit" target="_blank" class="btn">Contact Me</a>
+<div class="sign">developed by<br><span style="color:#fff;">zero.ping/again</span></div>
+</div>
+</div>
+
+<!-- Скрипт для падающих символов -->
+<script>
+const canvas = document.getElementById('matrix-bg');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) {
+drops[x] = 1;
+}
+
+function draw() {
+ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+ctx.fillStyle = '#ff2b2b'; /* Красные символы */
+ctx.font = fontSize + 'px monospace';
+
+for (let i = 0; i < drops.length; i++) {
+const text = letters.charAt(Math.floor(Math.random() * letters.length));
+ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+drops[i] = 0;
+}
+drops[i]++;
+}
+}
+setInterval(draw, 35);
+</script>
+</body>
+</html>
