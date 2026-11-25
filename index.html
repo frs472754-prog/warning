@@ -1,112 +1,189 @@
-.sign {
-            font-size: 12px;
-            color: #666;
-            text-align: right;
-        }
-    </style>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Error</title>
+<style>
+  body {
+    background-color: #000;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+  }
+  #matrix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(10, 10, 10, 0.95);
+    border: 2px solid #333;
+    border-left: 4px solid #ff2b2b;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 10;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  .header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    object-fit: cover;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0;
+    letter-spacing: 2px;
+  }
+  .sub {
+    color: #ff2b2b;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+  .row span:last-child {
+    color: #fff;
+  }
+  .red {
+    color: #ff2b2b !important;
+    font-weight: bold;
+  }
+  .text {
+    background-color: #111;
+    padding: 15px;
+    border-left: 2px solid #ff2b2b;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #ddd;
+  }
+  .term {
+    background-color: #000;
+    border: 1px solid #222;
+    padding: 10px;
+    height: 100px;
+    overflow: hidden;
+    font-size: 12px;
+    color: #ff4444;
+    margin-bottom: 20px;
+  }
+  .term p {
+    margin: 0 0 5px 0;
+  }
+  .btn {
+    display: inline-block;
+    background-color: #ff2b2b;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+</style>
 </head>
 <body>
 
-    <canvas id="matrix-bg"></canvas>
+<canvas id="matrix"></canvas>
 
-    <div class="window">
-        <div class="header">
-            <img class="avatar" src="https://i.imgur.com/lTlIJP7.jpeg" alt="avatar">
-            <div>
-                <h1 class="title">CRITICAL ERROR</h1>
-                <div class="subtitle">System is under attack</div>
-            </div>
-        </div>
-
-        <!-- Строки угрозы -->
-        <div class="info"><span>Target URL:</span> <span>zero.ping/again</span></div>
-        <div class="info"><span>Status:</span> <span style="color: #ff2b2b;">DATA BREACH DETECTED</span></div>
-        <div class="info"><span>Threat Level:</span> <span style="color: #ff2b2b; font-weight: bold;">CRITICAL</span></div>
-
-        <div class="alert">
-            Warning: Your connection is compromised. Malicious code is being executed. Press the contact button to secure your data now.
-        </div>
-
-        <!-- Вылетающие командные строки -->
-        <div class="terminal" id="terminal">
-            <p>> injecting payload...</p>
-        </div>
-
-        <div class="footer">
-            <!-- Твоя новая ссылка -->
-            <a href="https://t.me/WarningZeroPing" target="_blank" class="btn">СВЯЗАТЬСЯ СО МНОЙ</a>
-            <div class="sign">developed by<br><span style="color:#fff;">zero.ping/again</span></div>
-        </div>
+<div class="box">
+  <div class="header">
+    <img src="https://i.imgur.com/lTlIJP7.jpeg" alt="ava">
+    <div>
+      <h1>CRITICAL ERROR</h1>
+      <div class="sub">System is under attack</div>
     </div>
+  </div>
 
-    <script>
-        // Эффект падающих символов
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+  <div class="row"><span>Target URL:</span> <span>zero.ping/again</span></div>
+  <div class="row"><span>Status:</span> <span class="red">DATA BREACH DETECTED</span></div>
+  <div class="row"><span>Threat Level:</span> <span class="red">CRITICAL</span></div>
 
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = [];
+  <div class="text">
+    Warning: Your connection is compromised. Malicious code is being executed. Press the contact button to secure your data now.
+  </div>
 
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
+  <div class="term" id="term">
+    <p>> injecting payload...</p>
+  </div>
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ff2b2b';
-            ctx.font = fontSize + 'px monospace';
+  <a href="https://t.me/WarningZeroPing" target="_blank" class="btn">СВЯЗАТЬСЯ СО МНОЙ</a>
+</div>
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-        setInterval(draw, 35);
+<script>
+  // Падающие символы
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = [];
+  for (let x = 0; x < columns; x++) drops[x] = 1;
 
-        // Вылетающие командные строки в терминале
-        const terminal = document.getElementById('terminal');
-        const commands = [
-            "> bypassing firewall...",
-            "> ERROR: Access denied",
-            "> injecting payload...",
-            "> extracting user data...",
-            "> tracking IP address...",
-            "> connection established.",
-            "> executing malware.exe",
-            "> SYSTEM COMPROMISED."
-        ];
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#ff2b2b';
+    ctx.font = fontSize + 'px monospace';
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(Math.floor(Math.random() * letters.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw, 35);
 
-        let cmdIndex = 0;
-        setInterval(() => {
-            const p = document.createElement('p');
-            p.textContent = commands[cmdIndex];
-            
-            // Если команда с ошибкой — делаем ее белой
-            if (commands[cmdIndex].includes("ERROR")) {
-                p.style.color = "#fff";
-            }
-            
-            terminal.appendChild(p);
-            
-            // Автоскролл вниз
-            terminal.scrollTop = terminal.scrollHeight;
-
-            cmdIndex++;
-            if (cmdIndex >= commands.length) {
-                cmdIndex = 0; // Зацикливаем
-                // Очищаем терминал, чтобы не переполнялся
-                setTimeout(() => { terminal.innerHTML = ''; }, 2000);
-            }
-        }, 1500); // Новая строка каждые 1.5 секунды
-    </script>
+  // Вылетающие строки
+const term = document.getElementById('term');
+const cmds = [
+"> bypassing firewall...",
+"> ERROR: Access denied",
+"> injecting payload...",
+"> extracting user data...",
+"> tracking IP address...",
+"> connection established.",
+"> executing malware.exe",
+"> SYSTEM COMPROMISED."
+];
+let idx = 0;
+setInterval(() => {
+const p = document.createElement('p');
+p.textContent = cmds[idx];
+if (cmds[idx].includes("ERROR")) p.style.color = "#fff";
+term.appendChild(p);
+term.scrollTop = term.scrollHeight;
+idx++;
+if (idx >= cmds.length) {
+idx = 0;
+setTimeout(() => { term.innerHTML = ''; }, 2000);
+}
+}, 1500);
+</script>
 </body>
 </html>
