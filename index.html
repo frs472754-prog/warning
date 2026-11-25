@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  
+
   body, html {
     margin: 0; padding: 0; width: 100%; height: 100vh;
     background-color: #050508; overflow: hidden;
@@ -22,31 +22,37 @@
     border: 1px solid #ffb7c5; border-radius: 50%;
     pointer-events: none; z-index: 9999;
     transform: translate(-50%, -50%);
-    transition: width 0.2s, height 0.2s, background 0.2s;
+    transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease;
     box-shadow: 0 0 15px #ffb7c5, inset 0 0 10px #ffb7c5;
     mix-blend-mode: screen;
+    will-change: left, top, width, height;
   }
-  
-  /* --- ФОН: ГИФКА + ДОЖДЬ + РАЗРЫВ --- */
+  .cursor-glow.hover {
+    width: 44px; height: 44px;
+    background: rgba(255, 183, 197, 0.15);
+    border-color: #fff;
+    box-shadow: 0 0 25px #ffb7c5, inset 0 0 18px #ffb7c5;
+  }
+
+  /* --- ФОН: ГИФКА + ДОЖДЬ --- */
   .bg-gif {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    position: absolute; inset: 0; width: 100%; height: 100%;
     background-image: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2NrbnltanljYzB4ejBhczlxY3VmYzJhbGtrdHRscGJpbHN1bnp3eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7SN7VRxzzcby9nyKJV/giphy.gif');
-    background-size: cover;
-    background-position: center;
+    background-size: cover; background-position: center;
     z-index: 1;
     filter: grayscale(100%) brightness(30%) contrast(120%);
     opacity: 0.6;
+    transition: opacity 1s ease, filter 1s ease;
   }
-
   .bg-night {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    position: absolute; inset: 0; width: 100%; height: 100%;
     background: radial-gradient(circle at 50% 50%, rgba(17, 17, 34, 0.4) 0%, rgba(5, 5, 8, 0.9) 100%);
-    z-index: 2; transition: opacity 1s ease;
+    z-index: 2; transition: background 1.2s ease;
   }
 
   /* --- ДОЖДЬ --- */
   .rain-container {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    position: absolute; inset: 0; width: 100%; height: 100%;
     z-index: 3; pointer-events: none; overflow: hidden;
   }
   .drop {
@@ -59,95 +65,178 @@
     100% { transform: translateY(100vh); }
   }
 
-  /* --- РАЗРЫВ СПРАВА (МАТРИЦА) --- */
+  /* --- РАЗРЫВ: ЕСТЕСТВЕННАЯ ТРЕЩИНА --- */
   .rift-container {
-    position: absolute; top: 15%; right: 5%; width: 250px; height: 70%;
+    position: absolute; top: 8%; right: 3%; width: 220px; height: 80%;
     z-index: 4; pointer-events: none;
-    border-left: 2px solid #ffb7c5; border-right: 2px solid #ffb7c5;
-    box-shadow: 0 0 40px rgba(255, 183, 197, 0.4), inset 0 0 60px rgba(0,0,0,1);
-    background: #000;
-    clip-path: polygon(
-      10% 0%, 90% 0%, 100% 10%, 95% 20%, 100% 30%, 90% 40%, 100% 50%, 
-      95% 60%, 100% 70%, 90% 80%, 100% 90%, 90% 100%, 
-      10% 100%, 0% 90%, 5% 80%, 0% 70%, 10% 60%, 0% 50%, 
-      5% 40%, 0% 30%, 10% 20%, 0% 10%
-    );
-    overflow: hidden; display: flex; justify-content: center;
-    animation: riftPulse 3s infinite alternate;
+    filter: drop-shadow(0 0 25px rgba(255, 183, 197, 0.55)) drop-shadow(0 0 60px rgba(255, 183, 197, 0.25));
+    animation: riftBreath 4s ease-in-out infinite alternate;
   }
-  @keyframes riftPulse {
-    0% { box-shadow: 0 0 20px rgba(255, 183, 197, 0.2), inset 0 0 40px #000; }
-    100% { box-shadow: 0 0 70px rgba(255, 183, 197, 0.7), inset 0 0 60px #000; }
-  }
-  .rift-matrix { display: flex; gap: 10px; width: 100%; height: 100%; justify-content: center; opacity: 0.9; }
-  .rift-column { color: #ffb7c5; font-size: 18px; font-weight: bold; text-shadow: 0 0 8px #ffb7c5; display: flex; flex-direction: column; align-items: center; }
-  .rift-column span { animation: fallDown linear infinite; }
-  @keyframes fallDown {
-    0% { transform: translateY(-100%); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
+  @keyframes riftBreath {
+    0%   { filter: drop-shadow(0 0 15px rgba(255,183,197,0.35)) drop-shadow(0 0 40px rgba(255,183,197,0.15)); }
+    100% { filter: drop-shadow(0 0 35px rgba(255,183,197,0.75)) drop-shadow(0 0 90px rgba(255,183,197,0.35)); }
   }
 
-  /* --- ГЛАЗ --- */
+  .rift-svg { width: 100%; height: 100%; display: block; }
+
+  /* Внутренняя тёмная «пустота» разрыва */
+  .rift-void {
+    fill: #000;
+    stroke: #ffb7c5;
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+  }
+
+  /* Слой с символами — обрезается по форме трещины */
+  .rift-chars-layer {
+    position: absolute; inset: 0;
+    clip-path: url(#riftClip);
+    -webkit-clip-path: url(#riftClip);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 14%;
+    opacity: 0.95;
+  }
+  .rift-col {
+    color: #ffb7c5;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-shadow: 0 0 6px #ffb7c5, 0 0 14px rgba(255,183,197,0.6);
+    display: flex; flex-direction: column; align-items: center;
+    will-change: transform;
+    user-select: none;
+  }
+  .rift-col span {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    will-change: transform, opacity;
+  }
+
+  /* --- АНИМЕ-ГЛАЗ (ХИЩНЫЙ) --- */
   .eye-container {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
-    width: 300px; height: 300px; z-index: 50;
-    opacity: 0; transition: opacity 1.5s ease, transform 1.5s ease;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.2);
+    width: 340px; height: 200px;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    filter: drop-shadow(0 0 40px rgba(255, 20, 40, 0.6));
+  }
+  .eye-container.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Форма глаза — «хищный» разрез */
+  .eye-shape {
+    position: absolute; inset: 0;
+    background: #000;
+    border-radius: 50% / 60% 60% 40% 40%;
+    clip-path: polygon(
+      0% 50%, 8% 38%, 20% 28%, 35% 22%, 50% 20%, 65% 22%,
+      80% 28%, 92% 38%, 100% 50%,
+      92% 62%, 80% 72%, 65% 78%, 50% 80%, 35% 78%,
+      20% 72%, 8% 62%
+    );
+    overflow: hidden;
+    box-shadow: inset 0 0 40px #000, inset 0 0 80px rgba(255,0,0,0.25);
+  }
+
+  /* Радужка */
+  .iris {
+    position: absolute; top: 50%; left: 50%;
+    width: 120px; height: 120px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 45%, #ff3b3b 0%, #c40000 35%, #7a0000 65%, #2a0000 100%);
+    box-shadow:
+      0 0 30px rgba(255, 0, 0, 0.8),
+      inset 0 0 25px rgba(0, 0, 0, 0.7),
+      inset 0 0 8px #ff8080;
+    animation: irisPulse 2.4s ease-in-out infinite alternate;
+  }
+  @keyframes irisPulse {
+    0%   { box-shadow: 0 0 25px rgba(255,0,0,0.7), inset 0 0 25px rgba(0,0,0,0.7), inset 0 0 8px #ff8080; }
+    100% { box-shadow: 0 0 60px rgba(255,0,0,1),  inset 0 0 25px rgba(0,0,0,0.7), inset 0 0 14px #ffb0b0; }
+  }
+
+  /* Вертикальный зрачок-щель */
+  .pupil {
+    position: absolute; top: 50%; left: 50%;
+    width: 14px; height: 78px;
+    transform: translate(-50%, -50%);
+    background: #000;
+    border-radius: 50%;
+    box-shadow: 0 0 18px #000, inset 0 0 6px #300;
+    animation: pupilDilate 3.2s ease-in-out infinite;
+  }
+  @keyframes pupilDilate {
+    0%, 100% { width: 14px; height: 78px; }
+    50%      { width: 10px; height: 66px; }
+  }
+
+  /* Блик */
+  .iris-shine {
+    position: absolute; top: 30%; left: 32%;
+    width: 26px; height: 22px;
+    background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0.5) 50%, transparent 75%);
+    border-radius: 50%;
+    opacity: 0.9;
+    filter: blur(1px);
+  }
+  .iris-shine.small {
+    top: 58%; left: 62%; width: 12px; height: 10px; opacity: 0.6;
+  }
+
+  /* Верхнее веко (лёгкая тень) */
+  .eyelid {
+    position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
     pointer-events: none;
   }
-  .eye-container.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  .eye {
-    width: 100%; height: 100%; border-radius: 50%;
-    background: radial-gradient(circle at 50% 50%, #ff0000 0%, #8b0000 20%, #000 40%);
-    box-shadow: 0 0 100px rgba(255, 0, 0, 0.5), inset 0 0 50px rgba(255, 0, 0, 0.8);
-    border: 2px solid #ff0000; animation: eyePulse 2s infinite alternate; position: relative;
-  }
-  .eye::after {
-    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 40px; height: 100px; background: #000; border-radius: 50%;
-    box-shadow: 0 0 20px #000; animation: pupilMove 3s infinite;
-  }
-  .eye::before {
-    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 120px; height: 120px; border-radius: 50%;
-    border: 2px dashed rgba(255, 0, 0, 0.5); animation: spin 5s linear infinite;
-  }
-  @keyframes eyePulse {
-    0% { transform: scale(1); box-shadow: 0 0 50px rgba(255, 0, 0, 0.5); }
-    100% { transform: scale(1.05); box-shadow: 0 0 150px rgba(255, 0, 0, 0.8); }
-  }
-  @keyframes pupilMove {
-    0%, 100% { transform: translate(-50%, -50%) scaleX(1); }
-    50% { transform: translate(-50%, -50%) scaleX(0.5); }
-  }
-  @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-  /* --- ГЛАВНОЕ ОКНО (GLASSMORPHISM) --- */
+  /* Сетка/прожилки */
+  .veins {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 60%, rgba(255,60,60,0.25), transparent 18%),
+      radial-gradient(circle at 82% 40%, rgba(255,60,60,0.22), transparent 16%),
+      radial-gradient(circle at 50% 15%, rgba(255,60,60,0.18), transparent 20%);
+    mix-blend-mode: screen;
+    opacity: 0.7;
+    animation: veinsShift 5s ease-in-out infinite alternate;
+  }
+  @keyframes veinsShift {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.85; }
+  }
+
+  /* --- ГЛАВНОЕ ОКНО --- */
   .main-window {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 90%; max-width: 380px; 
-    background: rgba(10, 10, 15, 0.4); /* Полупрозрачный фон */
-    backdrop-filter: blur(15px); /* Сильное размытие */
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; max-width: 380px;
+    background: rgba(10, 10, 15, 0.42);
+    backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 1px solid rgba(255, 183, 197, 0.5);
-    border-radius: 16px; /* Более скругленные углы */
+    border-radius: 16px;
     padding: 35px 25px; z-index: 10;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 183, 197, 0.1);
-    color: #fff; text-align: center; 
-    animation: float 6s ease-in-out infinite;
-    transition: opacity 0.5s, transform 0.3s;
+    color: #fff; text-align: center;
+    animation: windowBreath 7s ease-in-out infinite;
+    transition: opacity 0.6s ease, box-shadow 0.4s ease;
+    will-change: transform;
   }
-  
-  /* Легкий 3D-наклон при наведении на окно (эффект стекла) */
-  .main-window:hover {
-    transform: translate(-50%, -50%) perspective(1000px) rotateX(2deg) rotateY(-2deg);
-  }
-
-  @keyframes float { 
-    0%, 100% { transform: translate(-50%, -50%) translateY(0); } 
-    50% { transform: translate(-50%, -50%) translateY(-10px); } 
+  @keyframes windowBreath {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
+    50%      { transform: translate(-50%, -50%) translateY(-6px) rotate(-0.3deg); }
   }
 
   .avatar-container {
@@ -158,54 +247,78 @@
     animation: gradientBorder 3s linear infinite;
   }
   @keyframes gradientBorder {
-    0% { background-position: 0% 50%; }
+    0%   { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
   }
-  
   .main-window img {
     width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
     background: #000;
   }
 
-  .main-window h1 { 
-    margin: 0; font-size: 26px; letter-spacing: 5px; color: #fff; 
+  .main-window h1 {
+    margin: 0; font-size: 26px; letter-spacing: 5px; color: #fff;
     text-shadow: 0 0 15px rgba(255, 183, 197, 0.8);
     font-weight: 700; font-family: 'Playfair Display', serif;
   }
-  .subtitle-ru { 
-    font-size: 12px; color: #ffb7c5; margin: 5px 0 30px; letter-spacing: 3px; 
+  .subtitle-ru {
+    font-size: 12px; color: #ffb7c5; margin: 5px 0 30px; letter-spacing: 3px;
     text-transform: uppercase; opacity: 0.8;
   }
 
   .button-group { display: flex; flex-direction: column; gap: 15px; width: 100%; }
-  
-  /* Кнопки в стиле неонового стекла */
+
+  /* --- КНОПКИ: ПЛАВНАЯ ПОДСВЕТКА --- */
   .btn {
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    background: rgba(255, 255, 255, 0.03); color: #fff; 
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    padding: 15px 20px; text-decoration: none; 
-    font-size: 14px; font-weight: 700; text-transform: uppercase; 
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
-    cursor: none; position: relative; 
+    background: rgba(255, 255, 255, 0.03); color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 20px; text-decoration: none;
+    font-size: 14px; font-weight: 700; text-transform: uppercase;
+    cursor: none; position: relative; overflow: hidden;
     border-radius: 8px; letter-spacing: 2px;
     backdrop-filter: blur(5px);
+    transition:
+      background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      letter-spacing 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform, box-shadow;
   }
-  
+
+  /* Плавный «световой» блик */
   .btn::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 183, 197, 0.2), transparent);
-    transform: translateX(-100%); transition: 0.5s; border-radius: 8px;
+    content: '';
+    position: absolute; top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255, 183, 197, 0.35), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
   }
-  
-  .btn:hover { 
-    background: rgba(255, 183, 197, 0.1); 
+
+  /* Мягкое свечение по контуру */
+  .btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 0 rgba(255, 183, 197, 0);
+    transition: box-shadow 0.45s ease;
+    pointer-events: none;
+  }
+
+  .btn:hover {
+    background: rgba(255, 183, 197, 0.12);
     border-color: #ffb7c5;
-    box-shadow: 0 0 25px rgba(255, 183, 197, 0.5); 
     color: #fff;
+    letter-spacing: 3px;
     transform: translateY(-2px);
   }
-  .btn:hover::before { transform: translateX(100%); }
+  .btn:hover::before { left: 160%; }
+  .btn:hover::after  { box-shadow: 0 0 28px rgba(255, 183, 197, 0.55); }
+
+  .btn:active { transform: translateY(0) scale(0.985); }
 
   /* --- БИОГРАФИЯ --- */
   .bio-modal {
@@ -219,17 +332,22 @@
   }
   .bio-modal.show { display: block; animation: terminalOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
   @keyframes terminalOpen {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
     100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
   }
   .bio-header {
-    color: #ffb7c5; font-size: 18px; border-bottom: 1px dashed rgba(255, 183, 197, 0.3); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold;
+    color: #ffb7c5; font-size: 18px; border-bottom: 1px dashed rgba(255, 183, 197, 0.3);
+    padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between;
+    align-items: center; font-weight: bold;
   }
-  .bio-content-wrapper { position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .bio-content-wrapper {
+    position: relative; min-height: 200px; display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
+  }
   .secret-data { display: none; width: 100%; text-align: left; }
   .data-row { margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px; }
-  .label { color: #ffb7c5; text-transform: uppercase; font-size: 12px; margin-bottom: 4px; display: block; letter-spacing: 1px;}
-  .value { color: #fff; font-weight: bold; display: block; font-size: 14px;}
+  .label { color: #ffb7c5; text-transform: uppercase; font-size: 12px; margin-bottom: 4px; display: block; letter-spacing: 1px; }
+  .value { color: #fff; font-weight: bold; display: block; font-size: 14px; }
   .encrypted { color: #ffb7c5; font-family: 'Courier Prime', monospace; letter-spacing: 2px; }
 
   .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
@@ -258,7 +376,7 @@
   }
   .close-btn:hover { background: #ffb7c5; color: #000; }
   .modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: none; position: fixed; inset: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.7); z-index: 90; backdrop-filter: blur(10px);
   }
   .modal-overlay.show { display: block; }
@@ -277,26 +395,29 @@
   .heart-img { width: 120px; image-rendering: pixelated; }
   .heart-container.show { animation: heartPop 1.2s forwards; }
   @keyframes heartPop {
-    0% { transform: translate(-50%, -50%) scale(0); }
-    20% { transform: translate(-50%, -50%) scale(1.2); }
-    30% { transform: translate(-50%, -50%) scale(1) translateX(-15px); }
-    40% { transform: translate(-50%, -50%) scale(1) translateX(15px); }
-    50% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.5); }
-    60% { transform: translate(-50%, -50%) scale(1); }
+    0%   { transform: translate(-50%, -50%) scale(0); }
+    20%  { transform: translate(-50%, -50%) scale(1.2); }
+    30%  { transform: translate(-50%, -50%) scale(1) translateX(-15px); }
+    40%  { transform: translate(-50%, -50%) scale(1) translateX(15px); }
+    50%  { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.5); }
+    60%  { transform: translate(-50%, -50%) scale(1); }
     100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; filter: blur(8px); }
   }
   .damage-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; inset: 0; width: 100%; height: 100%;
     background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.6) 100%);
     z-index: 9998; pointer-events: none; opacity: 0;
   }
   .damage-overlay.hit { animation: damageFlash 0.8s ease-out; }
   @keyframes damageFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
-  
+
   /* Мобильная адаптация */
   @media (max-width: 600px) {
-    .rift-container { right: -20%; opacity: 0.5; }
-    .main-window { background: rgba(10, 10, 15, 0.6); } /* Чуть темнее на телефонах для читаемости */
+    .rift-container { right: -18%; opacity: 0.55; width: 160px; }
+    .main-window { background: rgba(10, 10, 15, 0.62); }
+    .eye-container { width: 260px; height: 150px; }
+    .iris { width: 90px; height: 90px; }
+    .pupil { height: 58px; width: 11px; }
   }
 </style>
 </head>
@@ -312,17 +433,66 @@
   <!-- ДОЖДЬ -->
   <div class="rain-container" id="rainContainer"></div>
 
-  <!-- РАЗРЫВ СПРАВА (МАТРИЦА) -->
+  <!-- РАЗРЫВ: ЕСТЕСТВЕННАЯ ТРЕЩИНА -->
   <div class="rift-container">
-    <div class="rift-matrix" id="riftMatrix"></div>
+    <!-- SVG-маска для рваных краёв -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <clipPath id="riftClip" clipPathUnits="objectBoundingBox">
+          <path d="
+            M0.50,0.00
+            L0.62,0.04 L0.55,0.08 L0.70,0.12 L0.58,0.16
+            L0.74,0.21 L0.60,0.25 L0.78,0.30 L0.62,0.34
+            L0.82,0.39 L0.66,0.44 L0.86,0.49 L0.68,0.54
+            L0.88,0.59 L0.70,0.64 L0.86,0.69 L0.68,0.74
+            L0.84,0.79 L0.66,0.84 L0.80,0.89 L0.62,0.94
+            L0.72,0.98 L0.55,1.00
+            L0.42,0.96 L0.50,0.92 L0.36,0.88 L0.48,0.84
+            L0.32,0.80 L0.44,0.76 L0.28,0.72 L0.42,0.68
+            L0.24,0.64 L0.40,0.60 L0.20,0.56 L0.38,0.52
+            L0.16,0.48 L0.36,0.44 L0.14,0.40 L0.34,0.36
+            L0.16,0.32 L0.36,0.28 L0.18,0.24 L0.38,0.20
+            L0.22,0.16 L0.40,0.12 L0.26,0.08 L0.42,0.04
+            Z" />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <svg class="rift-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path class="rift-void" d="
+        M50,0
+        L62,4 L55,8 L70,12 L58,16
+        L74,21 L60,25 L78,30 L62,34
+        L82,39 L66,44 L86,49 L68,54
+        L88,59 L70,64 L86,69 L68,74
+        L84,79 L66,84 L80,89 L62,94
+        L72,98 L55,100
+        L42,96 L50,92 L36,88 L48,84
+        L32,80 L44,76 L28,72 L42,68
+        L24,64 L40,60 L20,56 L38,52
+        L16,48 L36,44 L14,40 L34,36
+        L16,32 L36,28 L18,24 L38,20
+        L22,16 L40,12 L26,8 L42,4 Z" />
+    </svg>
+
+    <div class="rift-chars-layer" id="riftChars"></div>
   </div>
 
   <div class="heart-container" id="heartContainer">
     <img class="heart-img" src="https://i.imgur.com/8Q4ZqKq.png" alt="heart">
   </div>
 
+  <!-- АНИМЕ-ГЛАЗ -->
   <div class="eye-container" id="eyeContainer">
-    <div class="eye"></div>
+    <div class="eye-shape">
+      <div class="veins"></div>
+      <div class="iris">
+        <div class="iris-shine"></div>
+        <div class="iris-shine small"></div>
+        <div class="pupil"></div>
+      </div>
+      <div class="eyelid"></div>
+    </div>
   </div>
 
   <!-- ГЛАВНОЕ ОКНО -->
@@ -330,10 +500,10 @@
     <div class="avatar-container">
       <img src="https://i.imgur.com/lTlIJP7.jpeg" alt="ava">
     </div>
-    
+
     <h1>ZERO.PING</h1>
     <p class="subtitle-ru">СИСТЕМА АКТИВНА</p>
-    
+
     <div class="button-group">
       <button onclick="triggerEyeSequence()" class="btn">
         <span>НАПИСАТЬ В ЛС</span>
@@ -352,7 +522,7 @@
       <span>СЕКРЕТНЫЙ ФАЙЛ</span>
       <button class="close-btn" onclick="closeBio()">[ X ]</button>
     </div>
-    
+
     <div class="bio-content-wrapper">
       <button class="decrypt-btn" id="decryptBtn" onclick="triggerHit()">РАСШИФРОВАТЬ</button>
 
@@ -388,195 +558,21 @@
   </div>
 
   <script>
-    // --- КУРСОР ---
+    /* =========================================================
+       1. КУРСОР (плавный, без дёрганья)
+       ========================================================= */
     const cursor = document.getElementById('cursorGlow');
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
-    });
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let curX = mouseX, curY = mouseY;
+
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
     document.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      cursor.style.left = touch.clientX + 'px'; cursor.style.top = touch.clientY + 'px';
-    });
-    const interactiveElements = document.querySelectorAll('a, .btn, .avatar-container, .decrypt-btn');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.width = '40px'; cursor.style.height = '40px';
-        cursor.style.background = 'rgba(255, 183, 197, 0.2)';
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.style.width = '20px'; cursor.style.height = '20px';
-        cursor.style.background = 'transparent';
-      });
-    });
+      const t = e.touches[0];
+      mouseX = t.clientX; mouseY = t.clientY;
+    }, { passive: true });
 
-    // --- ДОЖДЬ ---
-    const rainContainer = document.getElementById('rainContainer');
-    function createDrop() {
-      const drop = document.createElement('div');
-      drop.classList.add('drop');
-      
-      // Случайная позиция по горизонтали
-      drop.style.left = Math.random() * 100 + 'vw';
-      
-      // Случайная высота и скорость
-      const height = Math.random() * 60 + 40;
-      drop.style.height = height + 'px';
-      const duration = Math.random() * 0.5 + 0.5; // Быстрый дождь
-      drop.style.animation = `rainFall ${duration}s linear infinite`;
-      drop.style.animationDelay = Math.random() * 2 + 's';
-      
-      // Разная прозрачность
-      drop.style.opacity = Math.random() * 0.5 + 0.3;
-
-      rainContainer.appendChild(drop);
-
-      // Удаляем каплю после завершения
-      setTimeout(() => {
-        drop.remove();
-      }, 3000);
-    }
-    
-    // Постоянно создаем капли
-    setInterval(createDrop, 50); 
-
-    // --- МАТРИЦА В РАЗРЫВЕ ---
-    const riftMatrix = document.getElementById('riftMatrix');
-    const chars = '01!@#$%^&*()_+-=[]{}|;:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    function initRiftMatrix() {
-      riftMatrix.innerHTML = '';
-      const numColumns = 8;
-      for (let i = 0; i < numColumns; i++) {
-        const col = document.createElement('div');
-        col.classList.add('rift-column');
-        
-        for (let j = 0; j < 20; j++) {
-          const span = document.createElement('span');
-          span.textContent = chars[Math.floor(Math.random() * chars.length)];
-          span.style.animationDuration = (Math.random() * 2 + 1) + 's';
-          span.style.animationDelay = (Math.random() * -2) + 's';
-          span.style.opacity = Math.random() * 0.5 + 0.5;
-          col.appendChild(span);
-        }
-        riftMatrix.appendChild(col);
-      }
-    }
-    initRiftMatrix();
-    
-    setInterval(() => {
-      const spans = riftMatrix.querySelectorAll('span');
-      spans.forEach(span => {
-        if (Math.random() > 0.8) {
-          span.textContent = chars[Math.floor(Math.random() * chars.length)];
-        }
-      });
-    }, 200);
-
-    // --- СЦЕНАРИЙ С ГЛАЗОМ И ЗВУКОМ ---
-    function triggerEyeSequence() {
-      const mainWindow = document.getElementById('mainWindow');
-      const eyeContainer = document.getElementById('eyeContainer');
-      const bgNight = document.getElementById('bgNight');
-      const bgGif = document.getElementById('bgGif');
-
-      playHorrorSound();
-
-      mainWindow.style.opacity = '0';
-      setTimeout(() => { mainWindow.style.display = 'none'; }, 500);
-      
-      // Затемняем фон
-      bgGif.style.opacity = '0';
-      bgNight.style.background = 'radial-gradient(circle at 50% 50%, #300000 0%, #000 80%)';
-
-      eyeContainer.classList.add('active');
-
-      setTimeout(() => {
-        window.location.href = 'https://t.me/WarningZeroPing';
-      }, 3500);
-    }
-
-    function playHorrorSound() {
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioContext();
-        const osc1 = ctx.createOscillator();
-        const osc2 = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-
-        osc1.type = 'sawtooth'; osc2.type = 'sine';
-
-        osc1.frequency.setValueAtTime(50, ctx.currentTime);
-        osc1.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 3);
-        osc2.frequency.setValueAtTime(150, ctx.currentTime);
-        osc2.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 3);
-
-        gainNode.gain.setValueAtTime(0, ctx.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 1);
-        gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 3.5);
-
-        osc1.connect(gainNode); osc2.connect(gainNode);
-        gainNode.connect(ctx.destination);
-
-        osc1.start(); osc2.start();
-        osc1.stop(ctx.currentTime + 3.5); osc2.stop(ctx.currentTime + 3.5);
-      } catch (e) { console.log("Звук заблокирован"); }
-    }
-
-    // --- БИОГРАФИЯ ---
-    const bioModal = document.getElementById('bioModal');
-    const bioOverlay = document.getElementById('bioOverlay');
-    const heartContainer = document.getElementById('heartContainer');
-
-    function startHeartAttack() {
-      const damage = document.getElementById('damageOverlay');
-      damage.classList.add('hit');
-      heartContainer.classList.add('show');
-
-      const mainWin = document.getElementById('mainWindow');
-      mainWin.style.animation = 'shake 0.5s';
-      setTimeout(() => { mainWin.style.animation = ''; }, 500);
-
-      setTimeout(() => {
-        bioModal.classList.add('show');
-        bioOverlay.classList.add('show');
-        resetBio();
-        heartContainer.classList.remove('show');
-      }, 1200);
-    }
-
-    function closeBio() {
-      bioModal.classList.remove('show');
-      bioOverlay.classList.remove('show');
-    }
-
-    function resetBio() {
-      document.getElementById('decryptBtn').style.display = 'block';
-      document.getElementById('deniedMessage').style.display = 'none';
-      document.getElementById('secretData').style.display = 'none';
-      document.querySelector('.bio-header span').textContent = 'СЕКРЕТНЫЙ ФАЙЛ';
-      document.querySelector('.status-bar span:first-child').textContent = 'СИСТЕМА: ЗАЩИЩЕНА';
-    }
-
-    function triggerHit() {
-      const modal = document.getElementById('bioModal');
-      const decryptBtn = document.getElementById('decryptBtn');
-      const damage = document.getElementById('damageOverlay');
-      
-      modal.classList.add('shake');
-      damage.classList.add('hit');
-
-      setTimeout(() => {
-        decryptBtn.style.display = 'none';
-        document.getElementById('deniedMessage').style.display = 'block';
-        document.querySelector('.bio-header span').textContent = 'ОШИБКА ДОСТУПА';
-        document.querySelector('.status-bar span:first-child').textContent = 'БРАНДМАУЭР: АКТИВЕН';
-      }, 200);
-
-      setTimeout(() => {
-        modal.classList.remove('shake');
-        damage.classList.remove('hit');
-      }, 600);
-    }
-  </script>
-</body>
-</html>
+    function cursorLoop() {
+      // мягкое сглаживание — курсор «догоняет» мышь, а не дёргается
+      curX += (mouseX - curX) * 0.25;
+      curY += (mouseY - curY) * 0.25;
+      cursor.style
