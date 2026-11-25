@@ -11,7 +11,7 @@ background-color: #050510; overflow: hidden;
 font-family: 'Courier New', Courier, monospace;
 }
 
-/* --- ЭФФЕКТ УРОНА (КАК В МАЙНКРАФТЕ) --- */
+/* --- ЭФФЕКТ УРОНА --- */
 .damage-overlay {
 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
 background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.7) 100%);
@@ -20,64 +20,38 @@ z-index: 9998; pointer-events: none; opacity: 0;
 .damage-overlay.hit {
 animation: damageFlash 0.8s ease-out;
 }
-@keyframes damageFlash {
+@keyframes damageFlash {
 0% { opacity: 1; }
 100% { opacity: 0; }
 }
 
-/* --- ПИКСЕЛЬНОЕ СЕРДЦЕ --- */
+/* --- КАРТИНКА СЕРДЦА --- */
 .heart-container {
 position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
 z-index: 9999; pointer-events: none;
-display: flex; justify-content: center; align-items: center;
 }
 
+.heart-img {
+width: 150px; /* Размер сердца */
+image-rendering: pixelated; /* Чтобы было пиксельным */
+}
+
+/* Анимация: выпрыгивает, трясется, разбивается */
 .heart-container.show {
-animation: heartPop 1.5s forwards;
+animation: heartPop 1.2s forwards;
 }
 
-@keyframes heartPop {
+@keyframes heartPop {
 0% { transform: translate(-50%, -50%) scale(0); }
-15% { transform: translate(-50%, -50%) scale(1.2); }
-30% { transform: translate(-50%, -50%) scale(1); }
-40% { transform: translate(-50%, -50%) scale(1) translateX(-5px); } /* Тряска */
-50% { transform: translate(-50%, -50%) scale(1) translateX(5px); }
-60% { transform: translate(-50%, -50%) scale(1) translateX(-5px); }
-70% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(2); } /* Трещина */
-100% { transform: translate(-50%, -50%) scale(2); opacity: 0; filter: blur(5px); } /* Разбилось */
+20% { transform: translate(-50%, -50%) scale(1.2); }
+30% { transform: translate(-50%, -50%) scale(1) translateX(-10px); }
+40% { transform: translate(-50%, -50%) scale(1) translateX(10px); }
+50% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.5); }
+60% { transform: translate(-50%, -50%) scale(1); }
+100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; filter: blur(5px); } /* Исчезает */
 }
 
-/* Само сердце (рисуем через box-shadow для пиксельного эффекта) */
-.pixel-heart {
-width: 20px;
-height: 20px;
-background: #ff0000;
-box-shadow: 
-/* Ряд 1 */
-20px 0 0 #ff0000, 40px 0 0 #ff0000, 60px 0 0 #ff0000, 80px 0 0 #ff0000, 100px 0 0 #ff0000, 140px 0 0 #ff0000, 160px 0 0 #ff0000, 180px 0 0 #ff0000, 200px 0 0 #ff0000, 220px 0 0 #ff0000,
-/* Ряд 2 */
-0px 20px 0 #ff0000, 20px 20px 0 #ff0000, 40px 20px 0 #ff0000, 60px 20px 0 #ff0000, 80px 20px 0 #ff0000, 100px 20px 0 #ff0000, 120px 20px 0 #ff0000, 140px 20px 0 #ff0000, 160px 20px 0 #ff0000, 180px 20px 0 #ff0000, 200px 20px 0 #ff0000, 220px 20px 0 #ff0000, 240px 20px 0 #ff0000,
-/* Ряд 3 */
-0px 40px 0 #ff0000, 20px 40px 0 #fff, 40px 40px 0 #fff, 60px 40px 0 #ff0000, 80px 40px 0 #ff0000, 100px 40px 0 #ff0000, 120px 40px 0 #ff0000, 140px 40px 0 #ff0000, 160px 40px 0 #ff0000, 180px 40px 0 #fff, 200px 40px 0 #fff, 220px 40px 0 #ff0000, 240px 40px 0 #ff0000,
-/* Ряд 4 */
-0px 60px 0 #ff0000, 20px 60px 0 #fff, 40px 60px 0 #fff, 60px 60px 0 #ff0000, 80px 60px 0 #ff0000, 100px 60px 0 #ff0000, 120px 60px 0 #ff0000, 140px 60px 0 #ff0000, 160px 60px 0 #ff0000, 180px 60px 0 #fff, 200px 60px 0 #fff, 220px 60px 0 #ff0000, 240px 60px 0 #ff0000,
-/* Ряд 5 */
-20px 80px 0 #ff0000, 40px 80px 0 #ff0000, 60px 80px 0 #ff0000, 80px 80px 0 #ff0000, 100px 80px 0 #ff0000, 120px 80px 0 #ff0000, 140px 80px 0 #ff0000, 160px 80px 0 #ff0000, 180px 80px 0 #ff0000, 200px 80px 0 #ff0000, 220px 80px 0 #ff0000,
-/* Ряд 6 */
-40px 100px 0 #ff0000, 60px 100px 0 #ff0000, 80px 100px 0 #ff0000, 100px 100px 0 #ff0000, 120px 100px 0 #ff0000, 140px 100px 0 #ff0000, 160px 100px 0 #ff0000, 180px 100px 0 #ff0000, 200px 100px 0 #ff0000,
-/* Ряд 7 */
-60px 120px 0 #ff0000, 80px 120px 0 #ff0000, 100px 120px 0 #ff0000, 120px 120px 0 #ff0000, 140px 120px 0 #ff0000, 160px 120px 0 #ff0000, 180px 120px 0 #ff0000,
-/* Ряд 8 */
-80px 140px 0 #ff0000, 100px 140px 0 #ff0000, 120px 140px 0 #ff0000, 140px 140px 0 #ff0000, 160px 140px 0 #ff0000,
-/* Ряд 9 */
-100px 160px 0 #ff0000, 120px 160px 0 #ff0000, 140px 160px 0 #ff0000,
-/* Ряд 10 */
-120px 180px 0 #ff0000;
-
-/* Сдвиг, чтобы сердце было по центру */
-transform: translate(-50%, -50%) scale(1.5);
-}
-  /* --- ФОН: КОСМОС И ГОРЫ --- */
+/* --- ФОН: КОСМОС И ГОРЫ --- */
 .landscape {
 position: absolute; top: 0; left: 0; width: 100%; height: 100%;
 z-index: 1; overflow: hidden;
@@ -115,7 +89,6 @@ animation: screenGlitch 5s infinite;
 94% { transform: translate(2px, 1px); opacity: 0.4; }
 95% { transform: translate(0); opacity: 0.3; }
 }
-
 #threats-container {
 position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;
 }
@@ -146,7 +119,7 @@ animation: windowGlitch 4s infinite, float 4s ease-in-out infinite;
 }
 @keyframes windowGlitch {
 0%, 88%, 100% { clip-path: inset(0 0 0 0); }
-  89% { clip-path: inset(10% 0 40% 0); transform: translate(-52%, -50%); }
+89% { clip-path: inset(10% 0 40% 0); transform: translate(-52%, -50%); }
 90% { clip-path: inset(0 0 0 0); transform: translate(-50%, -50%); }
 91% { clip-path: inset(40% 0 10% 0); transform: translate(-48%, -50%); }
 92% { clip-path: inset(0 0 0 0); transform: translate(-50%, -50%); }
@@ -188,8 +161,7 @@ font-family: 'Courier New', monospace; overflow: hidden;
 .bio-header {
 color: #fff; font-size: 18px; border-bottom: 1px dashed #444; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
 }
-
-.bio-content-wrapper {
+  .bio-content-wrapper {
 position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 
@@ -213,7 +185,8 @@ display: none; text-align: center; color: #fff; font-weight: bold; font-size: 18
 text-shadow: 0 0 10px #fff, 0 0 20px #fff; animation: blinkWhite 0.3s infinite; line-height: 1.5;
 }
 @keyframes blinkWhite { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  .decrypt-btn {
+
+.decrypt-btn {
 background: #fff; color: #000; border: none; padding: 15px 30px;
 font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; cursor: pointer;
 text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
@@ -246,9 +219,10 @@ animation: blinkWhite 2s infinite;
 
 <div class="damage-overlay" id="damageOverlay"></div>
 
-<!-- КОНТЕЙНЕР ДЛЯ СЕРДЦА -->
+<!-- КОНТЕЙНЕР ДЛЯ СЕРДЦА (КАРТИНКА) -->
 <div class="heart-container" id="heartContainer">
-<div class="pixel-heart"></div>
+<!-- Ссылка на пиксельное сердце из Майнкрафта -->
+<img class="heart-img" src="https://i.imgur.com/8Q4ZqKq.png" alt="heart">
 </div>
 
 <div class="landscape">
@@ -270,7 +244,7 @@ animation: blinkWhite 2s infinite;
 <a href="https://t.me/WarningZeroPing" target="_blank" class="btn">
 <span>Написать в ЛС</span><span>✉️</span>
 </a>
-<!-- Вызов функции с сердцем -->
+<!-- Запуск эффекта -->
 <button onclick="startHeartAttack()" class="btn" style="width: 100%;">
 <span>Моя биография</span><span>📄</span>
 </button>
@@ -281,7 +255,7 @@ animation: blinkWhite 2s infinite;
 
 <!-- ОКНО БИОГРАФИИ -->
 <div class="bio-modal" id="bioModal">
-<div class="bio-header">
+  <div class="bio-header">
 <span>FILE_ACCESS: RESTRICTED</span>
 <button class="close-btn" onclick="closeBio()">[ X ]</button>
 </div>
@@ -324,82 +298,82 @@ animation: blinkWhite 2s infinite;
 // Летающие угрозы
 const threatTexts = ["НАЖМИ БЫСТРЕЕ!", "ДАННЫЕ УКРАДЕНЫ!", "ТВОЙ IP ВИДЕН!", "СИСТЕМА ВЗЛОМАНА", "УГРОЗА: CRITICAL", "ЖМИ НА КНОПКУ!"];
 const container = document.getElementById('threats-container');
+
 function spawnThreat() {
-      const el = document.createElement('div');
-      el.className = 'threat-text';
-      el.textContent = threatTexts[Math.floor(Math.random() * threatTexts.length)];
-      let topPos = Math.random() * 100; let leftPos = Math.random() * 100;
-      if (topPos > 25 && topPos < 75 && leftPos > 15 && leftPos < 85) {
-        leftPos = leftPos < 50 ? 5 : 90; 
-      }
-      el.style.top = topPos + '%'; el.style.left = leftPos + '%';
-      el.style.fontSize = (Math.random() * 10 + 20) + 'px';
-      container.appendChild(el);
-      setTimeout(() => { el.remove(); }, 3000);
-    }
-    setInterval(spawnThreat, 800);
+const el = document.createElement('div');
+el.className = 'threat-text';
+el.textContent = threatTexts[Math.floor(Math.random() * threatTexts.length)];
+let topPos = Math.random() * 100; let leftPos = Math.random() * 100;
+if (topPos > 25 && topPos < 75 && leftPos > 15 && leftPos < 85) {
+leftPos = leftPos < 50 ? 5 : 90; 
+}
+el.style.top = topPos + '%'; el.style.left = leftPos + '%';
+el.style.fontSize = (Math.random() * 10 + 20) + 'px';
+container.appendChild(el);
+setTimeout(() => { el.remove(); }, 3000);
+}
+setInterval(spawnThreat, 800);
 
-    const bioModal = document.getElementById('bioModal');
-    const bioOverlay = document.getElementById('bioOverlay');
-    const mainWindow = document.getElementById('mainWindow');
-    const heartContainer = document.getElementById('heartContainer');
+const bioModal = document.getElementById('bioModal');
+const bioOverlay = document.getElementById('bioOverlay');
+const heartContainer = document.getElementById('heartContainer');
 
-    // ФУНКЦИЯ ЗАПУСКА АНИМАЦИИ СЕРДЦА И УРОНА
-    function startHeartAttack() {
-      // 1. Включаем красную вспышку
-      const damage = document.getElementById('damageOverlay');
-      damage.classList.add('hit');
+// ЗАПУСК ЭФФЕКТА СЕРДЦА И УРОНА
+function startHeartAttack() {
+// 1. Красная вспышка
+const damage = document.getElementById('damageOverlay');
+damage.classList.add('hit');
 
-      // 2. Показываем сердце
-      heartContainer.classList.add('show');
+// 2. Показываем сердце
+heartContainer.classList.add('show');
 
-      // 3. Трясем экран
-      document.body.style.animation = 'shake 0.5s';
-      setTimeout(() => { document.body.style.animation = ''; }, 500);
+// 3. Трясем только главное окно (а не весь сайт)
+const mainWin = document.getElementById('mainWindow');
+mainWin.style.animation = 'shake 0.5s';
+setTimeout(() => { mainWin.style.animation = ''; }, 500);
 
-      // 4. Открываем биографию, когда сердце "разобьется" (через 1.5 секунды)
-      setTimeout(() => {
-        bioModal.classList.add('show');
-        bioOverlay.classList.add('show');
-        resetBio();
-        heartContainer.classList.remove('show'); // Убираем сердце
-      }, 1200); // 1.2 секунды, чтобы анимация успела пройти
-    }
+// 4. Открываем досье через 1.2 секунды (когда сердце исчезнет)
+setTimeout(() => {
+bioModal.classList.add('show');
+bioOverlay.classList.add('show');
+resetBio();
+heartContainer.classList.remove('show');
+}, 1200);
+}
 
-    function closeBio() {
-      bioModal.classList.remove('show');
-      bioOverlay.classList.remove('show');
-    }
+function closeBio() {
+bioModal.classList.remove('show');
+bioOverlay.classList.remove('show');
+}
 
-    function resetBio() {
-      document.getElementById('decryptBtn').style.display = 'block';
-      document.getElementById('deniedMessage').style.display = 'none';
-      document.getElementById('secretData').style.display = 'none';
-      document.querySelector('.bio-header span').textContent = 'FILE_ACCESS: RESTRICTED';
-      document.querySelector('.status-bar span:first-child').textContent = 'SYS.OVERRIDE: FALSE';
-    }
+function resetBio() {
+document.getElementById('decryptBtn').style.display = 'block';
+document.getElementById('deniedMessage').style.display = 'none';
+document.getElementById('secretData').style.display = 'none';
+document.querySelector('.bio-header span').textContent = 'FILE_ACCESS: RESTRICTED';
+document.querySelector('.status-bar span:first-child').textContent = 'SYS.OVERRIDE: FALSE';
+}
 
-    // Второй удар (при попытке расшифровать)
-    function triggerHit() {
-      const modal = document.getElementById('bioModal');
-      const decryptBtn = document.getElementById('decryptBtn');
-      const damage = document.getElementById('damageOverlay');
-      
-      modal.classList.add('shake');
-      damage.classList.add('hit');
+// Второй удар (при попытке расшифровать)
+function triggerHit() {
+const modal = document.getElementById('bioModal');
+const decryptBtn = document.getElementById('decryptBtn');
+const damage = document.getElementById('damageOverlay');
 
-      setTimeout(() => {
-        decryptBtn.style.display = 'none';
-        document.getElementById('deniedMessage').style.display = 'block';
-        document.querySelector('.bio-header span').textContent = 'CRITICAL_ERROR: ACCESS_DENIED';
-        document.querySelector('.status-bar span:first-child').textContent = 'FIREWALL: ACTIVE';
-      }, 200);
+modal.classList.add('shake');
+damage.classList.add('hit');
+  setTimeout(() => {
+decryptBtn.style.display = 'none';
+document.getElementById('deniedMessage').style.display = 'block';
+document.querySelector('.bio-header span').textContent = 'CRITICAL_ERROR: ACCESS_DENIED';
+document.querySelector('.status-bar span:first-child').textContent = 'FIREWALL: ACTIVE';
+}, 200);
 
-      setTimeout(() => {
-        modal.classList.remove('shake');
-        damage.classList.remove('hit');
-      }, 600);
-    }
-  </script>
+setTimeout(() => {
+modal.classList.remove('shake');
+damage.classList.remove('hit');
+}, 600);
+}
+</script>
 </body>
 </html>
