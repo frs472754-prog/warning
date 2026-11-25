@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warning</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  .warning {
+    position: relative;
+    padding: 40px 60px;
+    background: linear-gradient(145deg, #1a0000, #2b0000);
+    border: 2px solid #ff2b2b;
+    border-radius: 14px;
+    box-shadow:
+      0 0 25px rgba(255, 43, 43, 0.6),
+      inset 0 0 30px rgba(255, 43, 43, 0.15);
+    text-align: center;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(255,43,43,.6), inset 0 0 30px rgba(255,43,43,.15); }
+    50%      { box-shadow: 0 0 45px rgba(255,43,43,.9), inset 0 0 40px rgba(255,43,43,.25); }
+  }
+
+  .icon {
+    font-size: 52px;
+    line-height: 1;
+    color: #ffcc00;
+    text-shadow: 0 0 20px rgba(255, 204, 0, .8);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 30px;
+    letter-spacing: 4px;
+    color: #ff2b2b;
+    text-transform: uppercase;
+    text-shadow: 0 0 12px rgba(255, 43, 43, .9);
+    margin: 0 0 18px;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ff2b2b, transparent);
+    margin: 18px 0;
+  }
+
+  .nick {
+    font-size: 26px;
+    color: #ffffff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255,255,255,.5);
+  }
+
+  .sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: #ff8a8a;
+    letter-spacing: 1.5px;
+  }
+
+  .scan {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .scan::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255,43,43,.8), transparent);
+    animation: scan 3s linear infinite;
+  }
+  @keyframes scan {
+    0%   { top: 0; }
+    100% { top: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="warning">
+    <div class="scan"></div>
+    <span class="icon">⚠</span>
+    <h1 class="title">Warning</h1>
+    <div class="divider"></div>
+    <div class="nick">zero.ping/again</div>
+    <div class="sub">MAY BE MALICIOUS · PROCEED WITH CAUTION</div>
+  </div>
+</body>
+</html>
