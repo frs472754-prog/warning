@@ -1,128 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Error</title>
-    <style>
-        /* Сброс отступов и черный фон */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        /* Слой для падающих символов */
-        #matrix-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* Само окно поверх символов */
-        .window {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 420px;
-            background: rgba(10, 10, 10, 0.95); /* Темный фон окна */
-            border: 2px solid #333;
-            border-left: 4px solid #ff2b2b; /* Красная полоска */
-            padding: 25px;
-            z-index: 10;
-            box-shadow: 0 0 30px rgba(255, 43, 43, 0.2);
-            color: #fff;
-        }
-
-        /* Шапка с аватаркой */
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            object-fit: cover;
-        }
-
-        .title {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 2px;
-            color: #fff;
-        }
-
-        .subtitle {
-            color: #ff2b2b;
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        /* Строки с информацией */
-        .info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
-
-        .info span:last-child {
-            color: #fff;
-        }
-
-        /* Текст предупреждения */
-        .alert {
-            background: #1a1a1a;
-            padding: 15px;
-            border-left: 2px solid #666;
-            margin: 20px 0;
-            font-size: 14px;
-            line-height: 1.5;
-            color: #ddd;
-        }
-
-        /* Кнопка и подпись */
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 25px;
-        }
-
-        .btn {
-            background: transparent;
-            color: #fff;
-            border: 1px solid #fff;
-            padding: 8px 16px;
-            text-decoration: none;
-            font-size: 14px;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            background: #fff;
-            color: #000;
-        }
-
-        .sign {
+.sign {
             font-size: 12px;
             color: #666;
             text-align: right;
@@ -131,66 +7,106 @@
 </head>
 <body>
 
-    <!-- Холст для Матрицы -->
     <canvas id="matrix-bg"></canvas>
 
-    <!-- Твое окно -->
     <div class="window">
         <div class="header">
             <img class="avatar" src="https://i.imgur.com/lTlIJP7.jpeg" alt="avatar">
             <div>
-                <h1 class="title">SYSTEM ERROR</h1>
-                <div class="subtitle">Connection compromised</div>
+                <h1 class="title">CRITICAL ERROR</h1>
+                <div class="subtitle">System is under attack</div>
             </div>
         </div>
 
+        <!-- Строки угрозы -->
         <div class="info"><span>Target URL:</span> <span>zero.ping/again</span></div>
-        <div class="info"><span>Status:</span> <span style="color: #ff2b2b;">Suspicious Activity</span></div>
-        <div class="info"><span>Threat:</span> <span>Potential Malware</span></div>
+        <div class="info"><span>Status:</span> <span style="color: #ff2b2b;">DATA BREACH DETECTED</span></div>
+        <div class="info"><span>Threat Level:</span> <span style="color: #ff2b2b; font-weight: bold;">CRITICAL</span></div>
 
         <div class="alert">
-            The website you are trying to visit contains malicious content. I warned you. Why are you still here?
+            Warning: Your connection is compromised. Malicious code is being executed. Press the contact button to secure your data now.
         </div>
+
+        <!-- Вылетающие командные строки -->
+        <div class="terminal" id="terminal">
+            <p>> injecting payload...</p>
+        </div>
+
         <div class="footer">
-<a href="https://t.me/lobbyDredmit" target="_blank" class="btn">Contact Me</a>
-<div class="sign">developed by<br><span style="color:#fff;">zero.ping/again</span></div>
-</div>
-</div>
+            <!-- Твоя новая ссылка -->
+            <a href="https://t.me/WarningZeroPing" target="_blank" class="btn">СВЯЗАТЬСЯ СО МНОЙ</a>
+            <div class="sign">developed by<br><span style="color:#fff;">zero.ping/again</span></div>
+        </div>
+    </div>
 
-<!-- Скрипт для падающих символов -->
-<script>
-const canvas = document.getElementById('matrix-bg');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    <script>
+        // Эффект падающих символов
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = [];
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
 
-for (let x = 0; x < columns; x++) {
-drops[x] = 1;
-}
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
 
-function draw() {
-ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff2b2b';
+            ctx.font = fontSize + 'px monospace';
 
-ctx.fillStyle = '#ff2b2b'; /* Красные символы */
-ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35);
 
-for (let i = 0; i < drops.length; i++) {
-const text = letters.charAt(Math.floor(Math.random() * letters.length));
-ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        // Вылетающие командные строки в терминале
+        const terminal = document.getElementById('terminal');
+        const commands = [
+            "> bypassing firewall...",
+            "> ERROR: Access denied",
+            "> injecting payload...",
+            "> extracting user data...",
+            "> tracking IP address...",
+            "> connection established.",
+            "> executing malware.exe",
+            "> SYSTEM COMPROMISED."
+        ];
 
-if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-drops[i] = 0;
-}
-drops[i]++;
-}
-}
-setInterval(draw, 35);
-</script>
+        let cmdIndex = 0;
+        setInterval(() => {
+            const p = document.createElement('p');
+            p.textContent = commands[cmdIndex];
+            
+            // Если команда с ошибкой — делаем ее белой
+            if (commands[cmdIndex].includes("ERROR")) {
+                p.style.color = "#fff";
+            }
+            
+            terminal.appendChild(p);
+            
+            // Автоскролл вниз
+            terminal.scrollTop = terminal.scrollHeight;
+
+            cmdIndex++;
+            if (cmdIndex >= commands.length) {
+                cmdIndex = 0; // Зацикливаем
+                // Очищаем терминал, чтобы не переполнялся
+                setTimeout(() => { terminal.innerHTML = ''; }, 2000);
+            }
+        }, 1500); // Новая строка каждые 1.5 секунды
+    </script>
 </body>
 </html>
