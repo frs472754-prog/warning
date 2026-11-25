@@ -5,112 +5,179 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>System Breach</title>
 <style>
-  body, html {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    background-color: #050510; overflow: hidden;
-    font-family: 'Courier New', Courier, monospace;
-  }
+body, html {
+margin: 0; padding: 0; width: 100%; height: 100%;
+background-color: #050510; overflow: hidden;
+font-family: 'Courier New', Courier, monospace;
+}
 
+/* --- ЭФФЕКТ УРОНА (КАК В МАЙНКРАФТЕ) --- */
+.damage-overlay {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+background: radial-gradient(circle, transparent 10%, rgba(255, 0, 0, 0.7) 100%);
+z-index: 9998; pointer-events: none; opacity: 0;
+}
+.damage-overlay.hit {
+animation: damageFlash 0.8s ease-out;
+}
+@keyframes damageFlash {
+0% { opacity: 1; }
+100% { opacity: 0; }
+}
+
+/* --- ПИКСЕЛЬНОЕ СЕРДЦЕ --- */
+.heart-container {
+position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+z-index: 9999; pointer-events: none;
+display: flex; justify-content: center; align-items: center;
+}
+
+.heart-container.show {
+animation: heartPop 1.5s forwards;
+}
+
+@keyframes heartPop {
+0% { transform: translate(-50%, -50%) scale(0); }
+15% { transform: translate(-50%, -50%) scale(1.2); }
+30% { transform: translate(-50%, -50%) scale(1); }
+40% { transform: translate(-50%, -50%) scale(1) translateX(-5px); } /* Тряска */
+50% { transform: translate(-50%, -50%) scale(1) translateX(5px); }
+60% { transform: translate(-50%, -50%) scale(1) translateX(-5px); }
+70% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(2); } /* Трещина */
+100% { transform: translate(-50%, -50%) scale(2); opacity: 0; filter: blur(5px); } /* Разбилось */
+}
+
+/* Само сердце (рисуем через box-shadow для пиксельного эффекта) */
+.pixel-heart {
+width: 20px;
+height: 20px;
+background: #ff0000;
+box-shadow: 
+/* Ряд 1 */
+20px 0 0 #ff0000, 40px 0 0 #ff0000, 60px 0 0 #ff0000, 80px 0 0 #ff0000, 100px 0 0 #ff0000, 140px 0 0 #ff0000, 160px 0 0 #ff0000, 180px 0 0 #ff0000, 200px 0 0 #ff0000, 220px 0 0 #ff0000,
+/* Ряд 2 */
+0px 20px 0 #ff0000, 20px 20px 0 #ff0000, 40px 20px 0 #ff0000, 60px 20px 0 #ff0000, 80px 20px 0 #ff0000, 100px 20px 0 #ff0000, 120px 20px 0 #ff0000, 140px 20px 0 #ff0000, 160px 20px 0 #ff0000, 180px 20px 0 #ff0000, 200px 20px 0 #ff0000, 220px 20px 0 #ff0000, 240px 20px 0 #ff0000,
+/* Ряд 3 */
+0px 40px 0 #ff0000, 20px 40px 0 #fff, 40px 40px 0 #fff, 60px 40px 0 #ff0000, 80px 40px 0 #ff0000, 100px 40px 0 #ff0000, 120px 40px 0 #ff0000, 140px 40px 0 #ff0000, 160px 40px 0 #ff0000, 180px 40px 0 #fff, 200px 40px 0 #fff, 220px 40px 0 #ff0000, 240px 40px 0 #ff0000,
+/* Ряд 4 */
+0px 60px 0 #ff0000, 20px 60px 0 #fff, 40px 60px 0 #fff, 60px 60px 0 #ff0000, 80px 60px 0 #ff0000, 100px 60px 0 #ff0000, 120px 60px 0 #ff0000, 140px 60px 0 #ff0000, 160px 60px 0 #ff0000, 180px 60px 0 #fff, 200px 60px 0 #fff, 220px 60px 0 #ff0000, 240px 60px 0 #ff0000,
+/* Ряд 5 */
+20px 80px 0 #ff0000, 40px 80px 0 #ff0000, 60px 80px 0 #ff0000, 80px 80px 0 #ff0000, 100px 80px 0 #ff0000, 120px 80px 0 #ff0000, 140px 80px 0 #ff0000, 160px 80px 0 #ff0000, 180px 80px 0 #ff0000, 200px 80px 0 #ff0000, 220px 80px 0 #ff0000,
+/* Ряд 6 */
+40px 100px 0 #ff0000, 60px 100px 0 #ff0000, 80px 100px 0 #ff0000, 100px 100px 0 #ff0000, 120px 100px 0 #ff0000, 140px 100px 0 #ff0000, 160px 100px 0 #ff0000, 180px 100px 0 #ff0000, 200px 100px 0 #ff0000,
+/* Ряд 7 */
+60px 120px 0 #ff0000, 80px 120px 0 #ff0000, 100px 120px 0 #ff0000, 120px 120px 0 #ff0000, 140px 120px 0 #ff0000, 160px 120px 0 #ff0000, 180px 120px 0 #ff0000,
+/* Ряд 8 */
+80px 140px 0 #ff0000, 100px 140px 0 #ff0000, 120px 140px 0 #ff0000, 140px 140px 0 #ff0000, 160px 140px 0 #ff0000,
+/* Ряд 9 */
+100px 160px 0 #ff0000, 120px 160px 0 #ff0000, 140px 160px 0 #ff0000,
+/* Ряд 10 */
+120px 180px 0 #ff0000;
+
+/* Сдвиг, чтобы сердце было по центру */
+transform: translate(-50%, -50%) scale(1.5);
+}
   /* --- ФОН: КОСМОС И ГОРЫ --- */
-  .landscape {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 1; overflow: hidden;
-    background: linear-gradient(to bottom, #050510 0%, #1a0b1c 50%, #3a0e1c 100%);
-  }
-  .stars {
-    position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-    background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent), radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 40% 20%, #fff, transparent), radial-gradient(2px 2px at 60% 40%, #fff, transparent), radial-gradient(1px 1px at 80% 10%, #fff, transparent), radial-gradient(1px 1px at 90% 50%, #fff, transparent);
-    background-size: 200px 200px; opacity: 0.6; animation: twinkle 4s infinite alternate;
-  }
-  @keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 0.8; } }
-  .mountains-back {
-    position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-    background: #1a0b1c; clip-path: polygon(0 100%, 0 50%, 15% 20%, 30% 60%, 45% 10%, 60% 50%, 75% 15%, 90% 60%, 100% 30%, 100% 100%);
-    animation: panBackground 20s linear infinite; z-index: 2;
-  }
-  .mountains-front {
-    position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
-    background: #2d0614; clip-path: polygon(0 100%, 0 60%, 20% 30%, 35% 70%, 50% 20%, 65% 60%, 80% 25%, 100% 60%, 100% 100%);
-    animation: panBackground 10s linear infinite; z-index: 3;
-  }
-  @keyframes panBackground { 0% { transform: translateX(0); } 100% { transform: translateX(-10%); } }
+.landscape {
+position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+z-index: 1; overflow: hidden;
+background: linear-gradient(to bottom, #050510 0%, #1a0b1c 50%, #3a0e1c 100%);
+}
+.stars {
+position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+background-image: radial-gradient(1px 1px at 10% 10%, #fff, transparent), radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 40% 20%, #fff, transparent), radial-gradient(2px 2px at 60% 40%, #fff, transparent), radial-gradient(1px 1px at 80% 10%, #fff, transparent), radial-gradient(1px 1px at 90% 50%, #fff, transparent);
+background-size: 200px 200px; opacity: 0.6; animation: twinkle 4s infinite alternate;
+}
+@keyframes twinkle { 0% { opacity: 0.4; } 100% { opacity: 0.8; } }
+.mountains-back {
+position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+background: #1a0b1c; clip-path: polygon(0 100%, 0 50%, 15% 20%, 30% 60%, 45% 10%, 60% 50%, 75% 15%, 90% 60%, 100% 30%, 100% 100%);
+animation: panBackground 20s linear infinite; z-index: 2;
+}
+.mountains-front {
+position: absolute; bottom: 0; left: 0; width: 100%; height: 40%;
+background: #2d0614; clip-path: polygon(0 100%, 0 60%, 20% 30%, 35% 70%, 50% 20%, 65% 60%, 80% 25%, 100% 60%, 100% 100%);
+animation: panBackground 10s linear infinite; z-index: 3;
+}
+@keyframes panBackground { 0% { transform: translateX(0); } 100% { transform: translateX(-10%); } }
 
-  /* --- ЭФФЕКТ РАЗРЫВА ЭКРАНА --- */
-  .glitch-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(255, 43, 43, 0.05) 0px, rgba(255, 43, 43, 0.05) 1px, transparent 1px, transparent 4px);
-    animation: screenGlitch 5s infinite;
-  }
-  @keyframes screenGlitch {
-    0%, 90%, 100% { transform: translate(0); opacity: 0.3; }
-    91% { transform: translate(-5px, 2px); opacity: 0.6; }
-    92% { transform: translate(5px, -2px); opacity: 0.3; }
-    93% { transform: translate(-2px, 0); opacity: 0.5; }
-    94% { transform: translate(2px, 1px); opacity: 0.4; }
-    95% { transform: translate(0); opacity: 0.3; }
-  }
+/* --- ЭФФЕКТ РАЗРЫВА --- */
+.glitch-overlay {
+position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none;
+background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 4px);
+animation: screenGlitch 5s infinite;
+}
+@keyframes screenGlitch {
+0%, 90%, 100% { transform: translate(0); opacity: 0.3; }
+91% { transform: translate(-5px, 2px); opacity: 0.6; }
+92% { transform: translate(5px, -2px); opacity: 0.3; }
+93% { transform: translate(-2px, 0); opacity: 0.5; }
+94% { transform: translate(2px, 1px); opacity: 0.4; }
+95% { transform: translate(0); opacity: 0.3; }
+}
 
-  #threats-container {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;
-  }
-  .threat-text {
-    position: absolute; font-weight: 900; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 3px; color: #fff; opacity: 0; white-space: nowrap;
-    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff2b2b, 0 0 40px #ff2b2b;
-    animation: hologramGlitch 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-  @keyframes hologramGlitch {
-    0% { opacity: 0; transform: scaleY(0); }
-    10% { opacity: 1; transform: scaleY(1); }
-    15% { transform: translateX(-10px) skewX(20deg); }
-    17% { transform: translateX(10px) skewX(-20deg); }
-    19% { transform: translateX(-5px) skewX(0); }
-    21% { transform: translateX(5px) skewX(0); }
-    75% { opacity: 1; transform: scaleY(1); filter: blur(0); }
-    100% { opacity: 0; transform: scaleY(0.1) scaleX(1.5); filter: blur(10px); }
-  }
+#threats-container {
+position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;
+}
+.threat-text {
+position: absolute; font-weight: 900; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 3px; color: #fff; opacity: 0; white-space: nowrap;
+text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #fff;
+animation: hologramGlitch 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+@keyframes hologramGlitch {
+0% { opacity: 0; transform: scaleY(0); }
+10% { opacity: 1; transform: scaleY(1); }
+15% { transform: translateX(-10px) skewX(20deg); }
+17% { transform: translateX(10px) skewX(-20deg); }
+19% { transform: translateX(-5px) skewX(0); }
+21% { transform: translateX(5px) skewX(0); }
+75% { opacity: 1; transform: scaleY(1); filter: blur(0); }
+100% { opacity: 0; transform: scaleY(0.1) scaleX(1.5); filter: blur(10px); }
+}
 
-  /* Главное окно */
-  .main-window {
-    position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-    width: 90%; max-width: 380px; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(5px);
-    border: 2px solid #ff2b2b; border-radius: 10px; padding: 30px 25px; z-index: 10;
-    box-shadow: 0 0 60px rgba(255, 43, 43, 0.4), inset 0 0 20px rgba(255, 43, 43, 0.2);
+/* Главное окно (ЧЕРНО-БЕЛОЕ) */
+.main-window {
+position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+width: 90%; max-width: 380px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(5px);
+border: 2px solid #fff; border-radius: 10px; padding: 30px 25px; z-index: 10;
+box-shadow: 0 0 60px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1);
 color: #fff; text-align: center; box-sizing: border-box;
 animation: windowGlitch 4s infinite, float 4s ease-in-out infinite;
 }
 @keyframes windowGlitch {
 0%, 88%, 100% { clip-path: inset(0 0 0 0); }
-89% { clip-path: inset(10% 0 40% 0); transform: translate(-52%, -50%); }
+  89% { clip-path: inset(10% 0 40% 0); transform: translate(-52%, -50%); }
 90% { clip-path: inset(0 0 0 0); transform: translate(-50%, -50%); }
 91% { clip-path: inset(40% 0 10% 0); transform: translate(-48%, -50%); }
 92% { clip-path: inset(0 0 0 0); transform: translate(-50%, -50%); }
 }
 @keyframes float { 0%, 100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-15px); } }
 
-.main-window img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; margin-bottom: 15px; box-shadow: 0 0 30px #ff2b2b; }
-.main-window h1 { margin: 0; font-size: 24px; letter-spacing: 2px; color: #fff; text-shadow: 0 0 10px #ff2b2b, 0 0 20px #ff2b2b; }
-.main-window p { color: #ddd; font-size: 14px; line-height: 1.5; margin: 15px 0 25px; }
+.main-window img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; margin-bottom: 15px; box-shadow: 0 0 30px #fff; }
+.main-window h1 { margin: 0; font-size: 24px; letter-spacing: 2px; color: #fff; text-shadow: 0 0 10px #fff; }
+.main-window p { color: #aaa; font-size: 14px; line-height: 1.5; margin: 15px 0 25px; }
 
 .button-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+
 .btn {
 display: flex; align-items: center; justify-content: space-between;
-background: rgba(255, 43, 43, 0.1); color: #fff; border: 1px solid #ff2b2b; padding: 12px 20px;
+background: rgba(255, 255, 255, 0.05); color: #fff; border: 1px solid #fff; padding: 12px 20px;
 text-decoration: none; font-size: 16px; font-weight: bold; text-transform: uppercase; transition: all 0.3s ease;
-cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(255, 43, 43, 0.2);
+cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
-.btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: #ff2b2b; transition: 0.3s; z-index: 1; }
+.btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: #fff; transition: 0.3s; z-index: 1; }
 .btn:hover::before { left: 0; }
-.btn:hover { box-shadow: 0 0 30px rgba(255, 43, 43, 0.8); color: #fff; transform: scale(1.02); }
+.btn:hover { box-shadow: 0 0 30px rgba(255, 255, 255, 0.6); color: #000; transform: scale(1.02); }
 .btn span { position: relative; z-index: 2; }
 
 /* --- МОДАЛЬНОЕ ОКНО БИОГРАФИИ --- */
 .bio-modal {
 display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-width: 90%; max-width: 420px; background: #080808;
-border: 1px solid #ff2b2b; border-top: 4px solid #ff2b2b;
+width: 90%; max-width: 400px; background: #000;
+border: 1px solid #fff; border-top: 4px solid #fff;
 border-radius: 4px; padding: 20px; z-index: 100;
-box-shadow: 0 0 50px rgba(255, 43, 43, 0.4); text-align: left;
-font-family: 'Courier New', monospace;
+box-shadow: 0 0 50px rgba(255, 255, 255, 0.2); text-align: left;
+font-family: 'Courier New', monospace; overflow: hidden;
 }
 .bio-modal.show { display: block; animation: terminalOpen 0.3s ease-out forwards; }
 @keyframes terminalOpen {
@@ -119,64 +186,70 @@ font-family: 'Courier New', monospace;
 }
 
 .bio-header {
-color: #ff2b2b; font-size: 18px; border-bottom: 1px dashed #333; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+color: #fff; font-size: 18px; border-bottom: 1px dashed #444; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
 }
 
-.bio-content {
-font-size: 14px; line-height: 1.8; color: #ccc;
-max-height: 350px; overflow-y: auto; padding-right: 5px;
+.bio-content-wrapper {
+position: relative; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
-.bio-content::-webkit-scrollbar { width: 6px; }
-.bio-content::-webkit-scrollbar-thumb { background: #ff2b2b; }
 
-/* Стили для строк досье */
-.data-row { margin-bottom: 12px; border-bottom: 1px solid #111; padding-bottom: 8px; }
+.secret-data { display: none; width: 100%; text-align: left; }
+.data-row { margin-bottom: 12px; border-bottom: 1px solid #222; padding-bottom: 8px; }
 .label { color: #888; text-transform: uppercase; font-size: 12px; margin-bottom: 4px; display: block;}
 .value { color: #fff; font-weight: bold; display: block;}
+.encrypted { color: #fff; font-family: 'Courier New', monospace; letter-spacing: 2px; text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
 
-.encrypted {
-color: #ff2b2b; font-family: 'Courier New', monospace; letter-spacing: 2px;
-text-shadow: 0 0 5px rgba(255, 43, 43, 0.5); word-break: break-all;
-}
-
-/* Стили для кнопки-обманки */
-.fake-link {
-background: #222; border: 1px solid #444; padding: 8px 12px; border-radius: 3px;
-cursor: pointer; display: inline-block; transition: 0.2s; color: #aaa;
-}
-.fake-link:hover { background: #333; border-color: #ff2b2b; color: #fff; }
-  /* Эффект тряски при ударе */
-.shake {
-animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-}
+/* Тряска окна */
+.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 @keyframes shake {
-10%, 90% { transform: translate3d(-1px, 0, 0); }
-20%, 80% { transform: translate3d(2px, 0, 0); }
-30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-40%, 60% { transform: translate3d(4px, 0, 0); }
+10%, 90% { transform: translate(-50%, -50%) translate3d(-2px, 0, 0); }
+20%, 80% { transform: translate(-50%, -50%) translate3d(4px, 0, 0); }
+30%, 50%, 70% { transform: translate(-50%, -50%) translate3d(-8px, 0, 0); }
+40%, 60% { transform: translate(-50%, -50%) translate3d(8px, 0, 0); }
 }
 
-.denied-text {
-color: #ff0000; font-weight: bold; font-size: 16px; margin-top: 10px; display: none;
-text-shadow: 0 0 10px #ff0000; animation: blinkRed 0.5s infinite;
+.denied-message {
+display: none; text-align: center; color: #fff; font-weight: bold; font-size: 18px;
+text-shadow: 0 0 10px #fff, 0 0 20px #fff; animation: blinkWhite 0.3s infinite; line-height: 1.5;
 }
-@keyframes blinkRed { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes blinkWhite { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .decrypt-btn {
+background: #fff; color: #000; border: none; padding: 15px 30px;
+font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; cursor: pointer;
+text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+transition: 0.2s; animation: pulse 1.5s infinite;
+}
+.decrypt-btn:hover { background: #ccc; box-shadow: 0 0 40px rgba(255, 255, 255, 1); }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
 .close-btn {
-background: transparent; color: #ff2b2b; border: 1px solid #ff2b2b; padding: 5px 10px;
+background: transparent; color: #fff; border: 1px solid #fff; padding: 5px 10px;
 font-family: 'Courier New', monospace; font-size: 12px; cursor: pointer;
 transition: 0.2s; text-transform: uppercase;
 }
-.close-btn:hover { background: #ff2b2b; color: #000; }
+.close-btn:hover { background: #fff; color: #000; }
 
 .modal-overlay {
 display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
 background: rgba(0,0,0,0.85); z-index: 90; backdrop-filter: blur(5px);
 }
 .modal-overlay.show { display: block; }
+
+.status-bar {
+margin-top: 20px; border-top: 1px dashed #444; padding-top: 10px;
+font-size: 12px; color: #fff; display: flex; justify-content: space-between;
+animation: blinkWhite 2s infinite;
+}
 </style>
 </head>
 <body>
+
+<div class="damage-overlay" id="damageOverlay"></div>
+
+<!-- КОНТЕЙНЕР ДЛЯ СЕРДЦА -->
+<div class="heart-container" id="heartContainer">
+<div class="pixel-heart"></div>
+</div>
 
 <div class="landscape">
 <div class="stars"></div>
@@ -188,80 +261,61 @@ background: rgba(0,0,0,0.85); z-index: 90; backdrop-filter: blur(5px);
 <div id="threats-container"></div>
 
 <!-- ГЛАВНОЕ ОКНО -->
-<div class="main-window">
+<div class="main-window" id="mainWindow">
 <img src="https://i.imgur.com/lTlIJP7.jpeg" alt="ava">
 <h1>CRITICAL BREACH</h1>
 <p>Выберите действие, чтобы обезопасить данные:</p>
 
 <div class="button-group">
-<!-- Убрал кнопку чата, оставил только ЛС и Био -->
 <a href="https://t.me/WarningZeroPing" target="_blank" class="btn">
 <span>Написать в ЛС</span><span>✉️</span>
 </a>
-<button onclick="openBio()" class="btn" style="width: 100%;">
+<!-- Вызов функции с сердцем -->
+<button onclick="startHeartAttack()" class="btn" style="width: 100%;">
 <span>Моя биография</span><span>📄</span>
 </button>
 </div>
 </div>
 
-<!-- ЗАТЕМНЕНИЕ -->
 <div class="modal-overlay" id="bioOverlay" onclick="closeBio()"></div>
 
-<!-- ОКНО БИОГРАФИИ (ДОСЬЕ) -->
+<!-- ОКНО БИОГРАФИИ -->
 <div class="bio-modal" id="bioModal">
 <div class="bio-header">
-<span>FILE_ACCESS: GRANTED</span>
+<span>FILE_ACCESS: RESTRICTED</span>
 <button class="close-btn" onclick="closeBio()">[ X ]</button>
 </div>
 
-<div class="bio-content" id="bioContent">
+<div class="bio-content-wrapper">
+<button class="decrypt-btn" id="decryptBtn" onclick="triggerHit()">РАСШИФРОВАТЬ</button>
 
+<div class="secret-data" id="secretData">
 <div class="data-row">
 <span class="label">Статус / Status:</span>
-<span class="value" style="color: #ff2b2b;">> АКТИВЕН</span>
+<span class="value">> АКТИВЕН</span>
 </div>
-
 <div class="data-row">
 <span class="label">Возраст / Age:</span>
 <span class="value encrypted">░▒▓ [ 0x31 0x37 ] ▓▒░</span>
 </div>
-
-<!-- КНОПКА-ОБМАНКА -->
 <div class="data-row">
 <span class="label">Имя / Name:</span>
-<div class="value">
-<span class="fake-link" onclick="triggerHit()">Нажмите, чтобы узнать</span>
-<div class="denied-text" id="deniedMsg">⚠ ОТКАЗ В ДОСТУПЕ К ИНФОРМАЦИИ ⚠</div>
+<span class="value encrypted">▓▒░ 0x5A45524F2E50494E47 ░▒▓</span>
 </div>
-</div>
-
-<div class="data-row">
-<span class="label">Деятельность / Activity:</span>
-<div class="value encrypted" style="font-size: 12px; line-height: 1.4;">
-> Специализация: Web Exploit / Crypto<br>
-> Уровень доступа: ROOT<br>
-> Сервер: Локация скрыта<br>
-> 01001100 01101111 01101100
-</div>
-</div>
-
-<div class="data-row">
-<span class="label">О себе / Bio:</span>
-<div class="value" style="color: #aaa; font-size: 13px;">
-Свободный художник в мире кода. Пишу скрипты, ломаю системы, слушаю музыку. 
-Если ты нашел этот сайт, значит, алгоритмы привели тебя правильно. 
-Пинг всегда равен нулю.
-</div>
-</div>
-
 <div class="data-row" style="border-bottom: none;">
 <span class="label">Связь / Contact:</span>
-<span class="value" style="color: #fff;">@WarningZeroPing</span>
+<span class="value">@WarningZeroPing</span>
+</div>
 </div>
 
+<div class="denied-message" id="deniedMessage">
+⚠ ОТКАЗ В ДОСТУПЕ ⚠<br>
+<span style="font-size: 14px; color: #888;">УРОВЕНЬ УГРОЗЫ ПОВЫШЕН</span>
 </div>
-  <div class="status-bar" style="margin-top: 15px; border-top: 1px dashed #333; padding-top: 10px; font-size: 12px; color: #ff2b2b; display: flex; justify-content: space-between; animation: blink 2s infinite;">
-<span>SYS.OVERRIDE: TRUE</span>
+</div>
+
+<div class="status-bar">
+<span>SYS.OVERRIDE: FALSE</span>
 <span>SECURE_LINE</span>
 </div>
 </div>
@@ -270,59 +324,82 @@ background: rgba(0,0,0,0.85); z-index: 90; backdrop-filter: blur(5px);
 // Летающие угрозы
 const threatTexts = ["НАЖМИ БЫСТРЕЕ!", "ДАННЫЕ УКРАДЕНЫ!", "ТВОЙ IP ВИДЕН!", "СИСТЕМА ВЗЛОМАНА", "УГРОЗА: CRITICAL", "ЖМИ НА КНОПКУ!"];
 const container = document.getElementById('threats-container');
-
 function spawnThreat() {
-const el = document.createElement('div');
-el.className = 'threat-text';
-el.textContent = threatTexts[Math.floor(Math.random() * threatTexts.length)];
-let topPos = Math.random() * 100; let leftPos = Math.random() * 100;
-if (topPos > 25 && topPos < 75 && leftPos > 15 && leftPos < 85) {
-leftPos = leftPos < 50 ? 5 : 90; 
-}
-el.style.top = topPos + '%'; el.style.left = leftPos + '%';
-el.style.fontSize = (Math.random() * 10 + 20) + 'px';
-container.appendChild(el);
-setTimeout(() => { el.remove(); }, 3000);
-}
-setInterval(spawnThreat, 800);
+      const el = document.createElement('div');
+      el.className = 'threat-text';
+      el.textContent = threatTexts[Math.floor(Math.random() * threatTexts.length)];
+      let topPos = Math.random() * 100; let leftPos = Math.random() * 100;
+      if (topPos > 25 && topPos < 75 && leftPos > 15 && leftPos < 85) {
+        leftPos = leftPos < 50 ? 5 : 90; 
+      }
+      el.style.top = topPos + '%'; el.style.left = leftPos + '%';
+      el.style.fontSize = (Math.random() * 10 + 20) + 'px';
+      container.appendChild(el);
+      setTimeout(() => { el.remove(); }, 3000);
+    }
+    setInterval(spawnThreat, 800);
 
-// Управление окном биографии
-const bioModal = document.getElementById('bioModal');
-const bioOverlay = document.getElementById('bioOverlay');
+    const bioModal = document.getElementById('bioModal');
+    const bioOverlay = document.getElementById('bioOverlay');
+    const mainWindow = document.getElementById('mainWindow');
+    const heartContainer = document.getElementById('heartContainer');
 
-function openBio() {
-bioModal.classList.add('show');
-bioOverlay.classList.add('show');
-// Сбрасываем кнопку-обманку при каждом открытии
-document.getElementById('deniedMsg').style.display = 'none';
-const fakeLink = document.querySelector('.fake-link');
-fakeLink.style.display = 'inline-block';
-fakeLink.textContent = 'Нажмите, чтобы узнать';
-}
+    // ФУНКЦИЯ ЗАПУСКА АНИМАЦИИ СЕРДЦА И УРОНА
+    function startHeartAttack() {
+      // 1. Включаем красную вспышку
+      const damage = document.getElementById('damageOverlay');
+      damage.classList.add('hit');
 
-function closeBio() {
-bioModal.classList.remove('show');
-bioOverlay.classList.remove('show');
-}
+      // 2. Показываем сердце
+      heartContainer.classList.add('show');
 
-// Функция "Удара" и отказа
-function triggerHit() {
-const modal = document.getElementById('bioModal');
-const fakeLink = document.querySelector('.fake-link');
-const deniedMsg = document.getElementById('deniedMsg');
+      // 3. Трясем экран
+      document.body.style.animation = 'shake 0.5s';
+      setTimeout(() => { document.body.style.animation = ''; }, 500);
 
-// 1. Трясем окно
-modal.classList.add('shake');
+      // 4. Открываем биографию, когда сердце "разобьется" (через 1.5 секунды)
+      setTimeout(() => {
+        bioModal.classList.add('show');
+        bioOverlay.classList.add('show');
+        resetBio();
+        heartContainer.classList.remove('show'); // Убираем сердце
+      }, 1200); // 1.2 секунды, чтобы анимация успела пройти
+    }
 
-// 2. Прячем кнопку "узнать" и показываем "Отказ"
-fakeLink.style.display = 'none';
-deniedMsg.style.display = 'block';
+    function closeBio() {
+      bioModal.classList.remove('show');
+      bioOverlay.classList.remove('show');
+    }
 
-// 3. Убираем тряску через 0.5 секунды
-setTimeout(() => {
-modal.classList.remove('shake');
-}, 500);
-}
-</script>
+    function resetBio() {
+      document.getElementById('decryptBtn').style.display = 'block';
+      document.getElementById('deniedMessage').style.display = 'none';
+      document.getElementById('secretData').style.display = 'none';
+      document.querySelector('.bio-header span').textContent = 'FILE_ACCESS: RESTRICTED';
+      document.querySelector('.status-bar span:first-child').textContent = 'SYS.OVERRIDE: FALSE';
+    }
+
+    // Второй удар (при попытке расшифровать)
+    function triggerHit() {
+      const modal = document.getElementById('bioModal');
+      const decryptBtn = document.getElementById('decryptBtn');
+      const damage = document.getElementById('damageOverlay');
+      
+      modal.classList.add('shake');
+      damage.classList.add('hit');
+
+      setTimeout(() => {
+        decryptBtn.style.display = 'none';
+        document.getElementById('deniedMessage').style.display = 'block';
+        document.querySelector('.bio-header span').textContent = 'CRITICAL_ERROR: ACCESS_DENIED';
+        document.querySelector('.status-bar span:first-child').textContent = 'FIREWALL: ACTIVE';
+      }, 200);
+
+      setTimeout(() => {
+        modal.classList.remove('shake');
+        damage.classList.remove('hit');
+      }, 600);
+    }
+  </script>
 </body>
 </html>
